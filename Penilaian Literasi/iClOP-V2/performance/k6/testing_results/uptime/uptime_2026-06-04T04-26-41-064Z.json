@@ -1,0 +1,11 @@
+{
+    "generated_at": "2026-06-04T04:26:41.067Z",
+    "uptime_percentage": 100,
+    "total_requests": 120,
+    "failed_request_rate": 0,
+    "avg_response_time_ms": 193.01236083333325,
+    "max_response_time_ms": 467.4042,
+    "min_response_time_ms": 94.1797,
+    "p95_response_time_ms": 333.518885,
+    "checks": []
+}

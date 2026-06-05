@@ -1,0 +1,27 @@
+# Mengabaikan folder vendor Laravel
+/vendor/
+
+# Mengabaikan file konfigurasi environment
+.env
+
+# Mengabaikan folder storage di Laravel
+/storage/
+
+# Mengabaikan file cache dan logs di Laravel
+/*.log
+/*.cache
+
+# Mengabaikan folder dan file terkait Python
+venv/
+lib/
+
+# Mengabaikan folder Model LLM
+/Model LLM/
+
+# Mengabaikan file sistem yang tidak diinginkan (MacOS, Windows)
+.DS_Store
+Thumbs.db
+
+# Mengabaikan file editor seperti VSCode, Sublime, dll
+.vscode/
+.idea/

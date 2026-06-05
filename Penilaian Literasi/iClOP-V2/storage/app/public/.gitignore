@@ -1,0 +1,4 @@
+*
+!literacy_materials/
+!literacy_materials/**
+!.gitignore

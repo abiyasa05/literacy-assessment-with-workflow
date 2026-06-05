@@ -1,0 +1,15 @@
+{
+    "generated_at": "2026-06-04T02:39:24.543Z",
+    "material_id": 20,
+    "question_type": "essay",
+    "question_count": 5,
+    "test_results": [],
+    "metrics": {
+            "avg_duration_ms": 143459.0327,
+            "max_duration_ms": 572779.2332,
+            "min_duration_ms": 176.5422,
+            "p95_duration_ms": 486932.22762499977,
+            "total_requests": 4,
+            "failed_request_rate": 0
+        }
+}

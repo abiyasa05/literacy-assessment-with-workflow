@@ -1,0 +1,10 @@
+{
+    "generated_at": "2026-06-04T06:38:06.268Z",
+    "total_essay_questions": 0,
+    "average_response_time_ms": 250443.46255999999,
+    "max_response_time_ms": 343950.667,
+    "min_response_time_ms": 120876.1942,
+    "p95_response_time_ms": 342444.8896,
+    "failed_request_rate": 0,
+    "results": []
+}

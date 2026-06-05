@@ -1,0 +1,15 @@
+{
+    "generated_at": "2026-06-04T03:10:43.894Z",
+    "material_id": 21,
+    "question_type": "multiple_choice",
+    "question_count": 5,
+    "test_results": [],
+    "metrics": {
+            "avg_duration_ms": 178103.452975,
+            "max_duration_ms": 711403.0725,
+            "min_duration_ms": 187.4071,
+            "p95_duration_ms": 604762.1079299997,
+            "total_requests": 4,
+            "failed_request_rate": 0
+        }
+}

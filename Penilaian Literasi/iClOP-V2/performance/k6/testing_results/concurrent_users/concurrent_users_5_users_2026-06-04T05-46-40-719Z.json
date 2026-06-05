@@ -1,0 +1,14 @@
+{
+    "generated_at": "2026-06-04T05:46:40.747Z",
+    "concurrent_users": 5,
+    "material_id": 20,
+    "question_type": "essay",
+    "question_count": 5,
+    "total_requests": 15,
+    "avg_response_time_ms": 650489.0731066667,
+    "max_response_time_ms": 4191464.6166,
+    "p95_response_time_ms": 2813727.9897599975,
+    "failed_request_rate": 0.06666666666666667,
+    "success_rate": 93.33333333333333,
+    "test_results": []
+}
