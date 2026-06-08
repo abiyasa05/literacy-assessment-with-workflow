@@ -415,7 +415,7 @@
                                                 @if ($question->type == 'multiple_choice')
                                                     Multiple Choice
                                                 @elseif ($question->type == 'essay')
-                                                    Short Answer
+                                                    Essay
                                                 @else
                                                     -
                                                 @endif
@@ -890,7 +890,7 @@
     </style>
     <footer class="footer"
         style="background-color: #EAEAEA; color: #636363; text-align: center; padding: 10px 0; position: fixed; bottom: 0;  width: 100%; ">
-        © 2023 Your Website. All rights reserved.
+        © 2026 Your Website. All rights reserved.
     </footer>
 
 </body>

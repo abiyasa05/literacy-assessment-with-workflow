@@ -360,7 +360,7 @@
             </div>
 
             <div class="divider"></div>
-            <p style="font-size: 16px; color: #636363; text-align: center; margin-top: 16px; margin-bottom: 16px;">© 2023 iCLOP. All rights reserved</p>
+            <p style="font-size: 16px; color: #636363; text-align: center; margin-top: 16px; margin-bottom: 16px;">© 2026 iCLOP. All rights reserved</p>
         </div>
     </div>
     </div>
