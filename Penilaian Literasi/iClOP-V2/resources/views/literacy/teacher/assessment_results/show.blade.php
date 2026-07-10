@@ -30,7 +30,7 @@
                 transform: translateX(-100%);
                 transition: transform 0.3s ease-in-out;
                 display: block !important;
-                box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+                box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
                 overflow-y: auto;
                 padding-top: 60px;
             }
@@ -192,7 +192,6 @@
     <script src="https://cdn.datatables.net/buttons/2.0.0/js/buttons.html5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script>
-
         // Define the font files in base64
         var robotoRegularBase64 = 'BASE64_STRING_OF_ROBOTO_REGULAR';
         var robotoBoldBase64 = 'BASE64_STRING_OF_ROBOTO_BOLD';
@@ -228,28 +227,32 @@
             </div>
 
             <!-- Logo (di kanan pada mobile, tengah di desktop) -->
-            <img src="{{ asset('./images/logo.png') }}" alt="logo" width="104" height="65" class="order-md-1 order-2 ms-auto" id="logoResponsive">
+            <img src="{{ asset('./images/logo.png') }}" alt="logo" width="104" height="65"
+                class="order-md-1 order-2 ms-auto" id="logoResponsive">
 
             <!-- Menu Desktop -->
             <div class="collapse navbar-collapse order-md-2 order-3 d-none d-md-flex" id="navbarSupportedContent">
                 <div class="mx-auto">
                     <ul class="navbar-nav mb-2 mb-lg-0 justify-content-center">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="/dashboard-student">Dashboard Teacher</a>
+                            <a class="nav-link active" aria-current="page" href="/dashboard-student">Dashboard
+                                Teacher</a>
                         </li>
                     </ul>
                 </div>
                 <div class="dropdown">
                     <p style="margin-top: 10px; margin-right: 10px;">
                         {{ auth()->user()->name }}
-                        <img src="{{ asset('./images/Group.png') }}" alt="Group" style="height: 50px; margin-right: 10px;">
+                        <img src="{{ asset('./images/Group.png') }}" alt="Group"
+                            style="height: 50px; margin-right: 10px;">
                         <i class="fas fa-chevron-down" style="color: #0079FF;"></i>
-                        <div class="dropdown-content" id="dropdownContent">
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST">
-                                @csrf
-                                <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
-                            </form>
-                        </div>
+                    <div class="dropdown-content" id="dropdownContent">
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <a href="#"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                        </form>
+                    </div>
                     </p>
                 </div>
             </div>
@@ -271,7 +274,7 @@
                                     </p>
                                 </div>
                                 <div class="col">
-                                    <img src="{{asset('./images/literacy/literacy.png')}}" alt="learning-logo"
+                                    <img src="{{ asset('./images/literacy/literacy.png') }}" alt="learning-logo"
                                         style="height: 45px;">
                                 </div>
                             </div>
@@ -389,8 +392,9 @@
                                     'relevansi' => $maybe['relevansi'] ?? 0,
                                     'kelengkapan' => $maybe['kelengkapan'] ?? 0,
                                     'kejelasan' => $maybe['kejelasan'] ?? 0,
-                                    'ai_score' => $maybe['ai_score'],
-                                    'text' => $maybe['text'] ?? null,
+                                    'ai_score' => $maybe['ai_score'] ?? 0,
+                                    'feedback' => $maybe['feedback'] ?? '',
+                                    'evaluation' => $maybe['evaluation'] ?? [],
                                 ];
 
                                 $isCorrect = (float) $maybe['ai_score'] >= $essayThreshold;
@@ -410,7 +414,7 @@
                             $essayResult = $parseEssayFeedback($answer);
                             $isCorrect = $essayResult['isCorrect'];
 
-                            if (! $isCorrect) {
+                            if (!$isCorrect) {
                                 $userAnswer = $normalize($answer->answer_text ?? '');
                                 $correctAnswers = explode("\n", $question->essay_answer ?? '');
                                 $maxMatch = 0;
@@ -443,7 +447,8 @@
                 <div class="content">
                     <div class="row mb-3">
                         <div class="col-12 d-flex justify-content-between align-items-center">
-                            <p style="font-size: 24px; font-weight: 500; color: #34364A; margin-bottom: 0;">Student Assessment Results</p>
+                            <p style="font-size: 24px; font-weight: 500; color: #34364A; margin-bottom: 0;">Student
+                                Assessment Results</p>
                             <button onclick="window.close()" class="btn btn-outline-secondary btn-sm">Back</button>
                         </div>
                     </div>
@@ -483,9 +488,11 @@
                         <ul class="list-group mt-4">
                             @php
                                 $questionTypeOrder = ['multiple_choice' => 1, 'ordering' => 2, 'essay' => 3];
-                                $sortedQuestions = collect($questions)->sortBy(function ($q) use ($questionTypeOrder) {
-                                    return $questionTypeOrder[$q->type] ?? 999;
-                                })->values();
+                                $sortedQuestions = collect($questions)
+                                    ->sortBy(function ($q) use ($questionTypeOrder) {
+                                        return $questionTypeOrder[$q->type] ?? 999;
+                                    })
+                                    ->values();
                             @endphp
                             @foreach ($sortedQuestions as $index => $question)
                                 @php
@@ -493,22 +500,29 @@
                                     $isCorrect = false;
                                     $similarityScore = null;
                                     $essayFeedbackData = null;
-                        
+
                                     $questionText = $question->question_text;
                                     $kutipan = null;
                                     $pertanyaanBersih = $questionText;
-                        
-                                    if (Str::contains($questionText, 'Read the following excerpt:') || Str::contains($questionText, 'Read the following paragraph:')) {
-                                        preg_match('/Bacalah (kutipan|paragraf) berikut:\s*"(.*?)"\s*(.*)/s', $questionText, $matches);
+
+                                    if (
+                                        Str::contains($questionText, 'Read the following excerpt:') ||
+                                        Str::contains($questionText, 'Read the following paragraph:')
+                                    ) {
+                                        preg_match(
+                                            '/Bacalah (kutipan|paragraf) berikut:\s*"(.*?)"\s*(.*)/s',
+                                            $questionText,
+                                            $matches,
+                                        );
                                         if (count($matches) >= 4) {
                                             $kutipan = trim($matches[2]);
                                             $pertanyaanBersih = trim($matches[3]);
                                         }
                                     }
-                        
+
                                     // Detect ordering questions (for example from question text or using $question->type === 'ordering')
                                     $isOrdering = Str::contains($questionText, 'urutan kalimat');
-                        
+
                                     // Penilaian
                                     if ($question->type === 'multiple_choice' && $answer) {
                                         $isCorrect = optional($answer->option)->is_correct;
@@ -517,7 +531,7 @@
                                         $essayFeedbackData = $essayResult['essayFeedbackData'];
                                         $isCorrect = $essayResult['isCorrect'];
 
-                                        if (! $essayFeedbackData) {
+                                        if (!$essayFeedbackData) {
                                             $userAnswer = $normalize($answer->answer_text ?? '');
                                             $correctAnswers = explode("\n", $question->essay_answer ?? '');
                                             $maxMatch = 0;
@@ -532,91 +546,151 @@
                                             $isCorrect = $maxMatch >= $essayThreshold;
                                         }
                                     }
-                        
+
                                     // Sentence choices for ordering questions
                                     $choices = $question->choices ? explode("\n", $question->choices) : [];
                                 @endphp
-                        
-                            <li class="list-group-item">
-                                <div class="row">
-                                    <!-- Question Number -->
-                                    <div class="col-auto d-flex justify-content-start align-items-start pt-2">
-                                        <strong>{{ $index + 1 }}.</strong>
-                                    </div>
-                            
-                                    <!-- Question and Answer Content -->
-                                    <div class="col">
-                                        {{-- Tampilkan kutipan atau paragraf jika ada --}}
-                                        @if ($kutipan)
-                                            <p class="pt-2"><strong>Bacalah kutipan berikut:</strong></p>
-                                            <div class="ps-3 pe-3"><em>"{{ $kutipan }}"</em></div>
-                                        @endif
-                            
-                                        {{-- Question --}}
-                                        <p class="mt-2">{{ $pertanyaanBersih }}</p>
-                            
-                                        {{-- Display options for ordering question --}}
-                                        @if ($isOrdering && count($choices) > 0)
-                                            <div class="ps-3">
-                                                @foreach ($choices as $i => $kalimat)
-                                                    <div>{{ $i + 1 }}. {{ $kalimat }}</div>
-                                                @endforeach
-                                            </div>
-                                        @elseif (count($choices) > 0)
-                                            <div class="ps-3">
-                                                @foreach ($choices as $i => $opsi)
-                                                    <div>{{ chr(65 + $i) }}. {{ $opsi }}</div>
-                                                @endforeach
-                                            </div>
-                                        @endif
-                            
-                                        {{-- Jawaban siswa --}}
-                                        <p class="mt-3">
-                                            <strong>Student Answer:</strong>
-                                            {{ $question->type === 'multiple_choice'
-                                                ? optional($answer)->option->option_text ?? 'Not Answered'
-                                                : optional($answer)->answer_text ?? 'Not Answered' }}
-                                        </p>
-                            
-                                        {{-- Skor dan feedback (untuk essay) --}}
-                                        @if ($question->type === 'essay')
-                                            @if ($essayFeedbackData)
-                                                <div class="mt-3 p-3 bg-light rounded">
-                                                    <strong>Skor AI Penilaian:</strong>
-                                                    <div class="mt-2">
-                                                        <small>
-                                                            <div>Relevansi: <strong>{{ $essayFeedbackData['relevansi'] }}%</strong></div>
-                                                            <div>Kelengkapan: <strong>{{ $essayFeedbackData['kelengkapan'] }}%</strong></div>
-                                                            <div>Kejelasan: <strong>{{ $essayFeedbackData['kejelasan'] }}%</strong></div>
-                                                            <div class="mt-2 border-top pt-2">Skor Akhir: <strong class="text-primary">{{ $essayFeedbackData['ai_score'] }}%</strong></div>
-                                                        </small>
-                                                    </div>
+
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <!-- Question Number -->
+                                        <div class="col-auto d-flex justify-content-start align-items-start pt-2">
+                                            <strong>{{ $index + 1 }}.</strong>
+                                        </div>
+
+                                        <!-- Question and Answer Content -->
+                                        <div class="col">
+                                            {{-- Tampilkan kutipan atau paragraf jika ada --}}
+                                            @if ($kutipan)
+                                                <p class="pt-2"><strong>Bacalah kutipan berikut:</strong></p>
+                                                <div class="ps-3 pe-3"><em>"{{ $kutipan }}"</em></div>
+                                            @endif
+
+                                            {{-- Question --}}
+                                            <p class="mt-2">{{ $pertanyaanBersih }}</p>
+
+                                            {{-- Display options for ordering question --}}
+                                            @if ($isOrdering && count($choices) > 0)
+                                                <div class="ps-3">
+                                                    @foreach ($choices as $i => $kalimat)
+                                                        <div>{{ $i + 1 }}. {{ $kalimat }}</div>
+                                                    @endforeach
                                                 </div>
-                                                @if (! $isCorrect && !empty($essayFeedbackData['text']))
-                                                    <div class="mt-3 alert alert-warning">
-                                                        <strong>Feedback AI:</strong>
-                                                        <div class="mt-1">{{ $essayFeedbackData['text'] }}</div>
+                                            @elseif (count($choices) > 0)
+                                                <div class="ps-3">
+                                                    @foreach ($choices as $i => $opsi)
+                                                        <div>{{ chr(65 + $i) }}. {{ $opsi }}</div>
+                                                    @endforeach
+                                                </div>
+                                            @endif
+
+                                            {{-- Jawaban siswa --}}
+                                            <p class="mt-3">
+                                                <strong>Student Answer:</strong>
+                                                {{ $question->type === 'multiple_choice'
+                                                    ? optional($answer)->option->option_text ?? 'Not Answered'
+                                                    : optional($answer)->answer_text ?? 'Not Answered' }}
+                                            </p>
+
+                                            {{-- Skor dan feedback (untuk essay) --}}
+                                            @if ($question->type === 'essay')
+                                                @if ($essayFeedbackData)
+                                                    <div class="card mt-3 shadow-sm">
+                                                        <div class="card-body">
+
+                                                            <h6 class="fw-bold mb-3">
+                                                                AI Assessment
+                                                            </h6>
+
+                                                            <div class="mb-3">
+                                                                <strong>Relevansi</strong><br>
+
+                                                                Skor :
+                                                                <span class="badge bg-primary">
+                                                                    {{ $essayFeedbackData['relevansi'] }}
+                                                                </span>
+
+                                                                <div class="text-muted mt-2">
+                                                                    {{ $essayFeedbackData['evaluation']['relevance']['justification'] ?? '-' }}
+                                                                </div>
+                                                            </div>
+
+                                                            <hr>
+
+                                                            <div class="mb-3">
+                                                                <strong>Kelengkapan</strong><br>
+
+                                                                Skor :
+                                                                <span class="badge bg-primary">
+                                                                    {{ $essayFeedbackData['kelengkapan'] }}
+                                                                </span>
+
+                                                                <div class="text-muted mt-2">
+                                                                    {{ $essayFeedbackData['evaluation']['completeness']['justification'] ?? '-' }}
+                                                                </div>
+                                                            </div>
+
+                                                            <hr>
+
+                                                            <div class="mb-3">
+                                                                <strong>Kejelasan</strong><br>
+
+                                                                Skor :
+                                                                <span class="badge bg-primary">
+                                                                    {{ $essayFeedbackData['kejelasan'] }}
+                                                                </span>
+
+                                                                <div class="text-muted mt-2">
+                                                                    {{ $essayFeedbackData['evaluation']['clarity']['justification'] ?? '-' }}
+                                                                </div>
+                                                            </div>
+
+                                                            <hr>
+
+                                                            <div>
+                                                                <strong>Skor Akhir</strong>
+
+                                                                <span class="badge bg-primary">
+                                                                    {{ $essayFeedbackData['ai_score'] }}%
+                                                                </span>
+                                                            </div>
+
+                                                            @if (!$isCorrect && !empty($essayFeedbackData['feedback']))
+                                                                <hr>
+
+                                                                <div class="alert alert-warning mt-3">
+                                                                    <strong>Feedback AI:</strong>
+                                                                    <div class="mt-1">
+                                                                        {{ $essayFeedbackData['feedback'] }}
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+
+                                                        </div>
                                                     </div>
-                                                @endif
-                                            @else
-                                                @if ($similarityScore !== null)
-                                                    <p><strong>Similarity Score:</strong> {{ number_format($similarityScore, 2) }}%</p>
+                                                @else
+                                                    {{-- Tetap tampilkan fallback jika AI gagal --}}
+                                                    @if ($similarityScore !== null)
+                                                        <div class="alert alert-secondary mt-3">
+                                                            <strong>Similarity Score (Fallback):</strong>
+                                                            {{ number_format($similarityScore, 2) }}%
+                                                        </div>
+                                                    @endif
                                                 @endif
                                             @endif
-                                            
-                                        @endif
+                                        </div>
+
+                                        <!-- Status benar/salah -->
+                                        <div class="col-auto d-flex align-items-start pt-2">
+                                            <span
+                                                class="badge {{ $isCorrect ? 'bg-success' : 'bg-danger' }} px-3 py-2">
+                                                {{ $isCorrect ? 'Correct ✅' : 'Incorrect ❌' }}
+                                            </span>
+                                        </div>
                                     </div>
-                            
-                                    <!-- Status benar/salah -->
-                                    <div class="col-auto d-flex align-items-start pt-2">
-                                        <span class="badge {{ $isCorrect ? 'bg-success' : 'bg-danger' }} px-3 py-2">
-                                            {{ $isCorrect ? 'Correct ✅' : 'Incorrect ❌' }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </li>                        
+                                </li>
                             @endforeach
-                        </ul>                                                                                                
+                        </ul>
                     </div>
                 </div>
             </main>
@@ -645,7 +719,7 @@
     </div>
 
     <script>
-        document.getElementById('toggleSidebar').addEventListener('click', function () {
+        document.getElementById('toggleSidebar').addEventListener('click', function() {
             var sidebar = document.getElementById('sidebarMenu');
             sidebar.classList.toggle('active');
         });
@@ -680,7 +754,7 @@
         });
     </script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             var ctx = document.getElementById('piechart').getContext('2d');
             var chart = new Chart(ctx, {
                 type: 'pie',
@@ -699,7 +773,7 @@
                         },
                         tooltip: {
                             callbacks: {
-                                label: function (tooltipItem) {
+                                label: function(tooltipItem) {
                                     return tooltipItem.label + ': ' + tooltipItem.raw + ' Jawaban';
                                 }
                             }
@@ -725,21 +799,21 @@
             window.location.href = "{{ route('php_material_detail') }}?phpid=" + id + "&start=" + controller;
 
             /*$.ajax({
-                type: "POST",
-                data: {
-                    id: id,
-                    title: title,
-                    _token: csrfToken // Add CSRF token to request data
-                },
-                dataType: 'html',
-                url: "{{ route('php_material_detail') }}",
-            success: function(res) {
+                    type: "POST",
+                    data: {
+                        id: id,
+                        title: title,
+                        _token: csrfToken // Add CSRF token to request data
+                    },
+                    dataType: 'html',
+                    url: "{{ route('php_material_detail') }}",
+                success: function(res) {
 
-            },
-            error: function(xhr, status, error) {
-                console.error("Error:", error);
-            }
-        });*/
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", error);
+                }
+            });*/
         }
 
         // Function to change icon, text, and link colors to blue
@@ -770,37 +844,37 @@
 
         // Add event listener to each link
         var manageUsersLink = document.getElementById('manageUsersLink');
-        manageUsersLink.addEventListener('click', function () {
+        manageUsersLink.addEventListener('click', function() {
             changeColor('manageUsers');
         });
 
         var manageMaterialsLink = document.getElementById('manageMaterialsLink');
-        manageMaterialsLink.addEventListener('click', function () {
+        manageMaterialsLink.addEventListener('click', function() {
             changeColor('manageMaterials');
         });
 
         var manageMaterialsLink = document.getElementById('manageQuestionsLink');
-        manageQuestionsLink.addEventListener('click', function () {
+        manageQuestionsLink.addEventListener('click', function() {
             changeColor('manageQuestions');
         });
 
         var startLearningLink = document.getElementById('learningLink');
-        startLearningLink.addEventListener('click', function () {
+        startLearningLink.addEventListener('click', function() {
             changeColor('learning');
         });
 
         var validationLink = document.getElementById('validationLink');
-        validationLink.addEventListener('click', function () {
+        validationLink.addEventListener('click', function() {
             changeColor('validation');
         });
 
         var rankLink = document.getElementById('rankLink');
-        rankLink.addEventListener('click', function () {
+        rankLink.addEventListener('click', function() {
             changeColor('rank');
         });
 
         var settingsLink = document.getElementById('settingsLink');
-        settingsLink.addEventListener('click', function () {
+        settingsLink.addEventListener('click', function() {
             changeColor('settings');
         });
 
@@ -833,14 +907,14 @@
         }
 
         //  Change TAB
-        $(document).ready(function () {
-            $('#users-tab').on('click', function (e) {
+        $(document).ready(function() {
+            $('#users-tab').on('click', function(e) {
                 e.preventDefault();
                 $('#materials-tab').removeClass('active');
                 $(this).tab('show');
             });
 
-            $('#materials-tab').on('click', function (e) {
+            $('#materials-tab').on('click', function(e) {
                 e.preventDefault();
                 $('#users-tab').removeClass('active');
                 $(this).tab('show');
@@ -848,27 +922,27 @@
         });
     </script>
     <script>
-        $(document).ready(function () {
-            $("#dropdownContainer").click(function () {
+        $(document).ready(function() {
+            $("#dropdownContainer").click(function() {
                 $("#dropdownContainer").toggleClass("active");
             });
-            $("#dropdownContent").click(function (e) {
+            $("#dropdownContent").click(function(e) {
                 e.stopPropagation();
             });
-            $(document).click(function () {
+            $(document).click(function() {
                 $("#dropdownContainer").removeClass("active");
             });
         });
     </script>
     <script>
-        $(document).ready(function () {
-            $("#dropdownContainer").click(function () {
+        $(document).ready(function() {
+            $("#dropdownContainer").click(function() {
                 $("#dropdownContainer").toggleClass("active");
             });
-            $("#dropdownContent").click(function (e) {
+            $("#dropdownContent").click(function(e) {
                 e.stopPropagation();
             });
-            $(document).click(function () {
+            $(document).click(function() {
                 $("#dropdownContainer").removeClass("active");
             });
             $('#progressTable').DataTable({
@@ -877,13 +951,13 @@
                 "ordering": true,
                 "info": true,
                 dom: 'Bfrtip', // Needs to include 'B' for buttons
-                buttons: [
-                    {
+                buttons: [{
                         extend: 'excelHtml5',
                         text: 'Export to Excel',
                         title: 'Data Export REACT',
-                        filename: 'react_data_export_topic_finished_student_' + new Date().toLocaleDateString() + '_' + new Date().toLocaleTimeString(),
-                        customize: function (xlsx) {
+                        filename: 'react_data_export_topic_finished_student_' + new Date()
+                            .toLocaleDateString() + '_' + new Date().toLocaleTimeString(),
+                        customize: function(xlsx) {
                             var sheet = xlsx.xl.worksheets['sheet1.xml'];
                             // Customizations go here
                         }
@@ -897,13 +971,13 @@
                 "ordering": true,
                 "info": true,
                 dom: 'Bfrtip', // Needs to include 'B' for buttons
-                buttons: [
-                    {
+                buttons: [{
                         extend: 'excelHtml5',
                         text: 'Export to Excel',
                         title: 'Data Export REACT',
-                        filename: 'react_data_export_student_submission_student_' + new Date().toLocaleDateString() + '_' + new Date().toLocaleTimeString(),
-                        customize: function (xlsx) {
+                        filename: 'react_data_export_student_submission_student_' + new Date()
+                            .toLocaleDateString() + '_' + new Date().toLocaleTimeString(),
+                        customize: function(xlsx) {
                             var sheet = xlsx.xl.worksheets['sheet1.xml'];
                             // Customizations go here
                         }
@@ -912,13 +986,15 @@
                         extend: 'pdfHtml5',
                         text: 'Export to PDF',
                         title: 'Data Export REACT',
-                        filename: 'react_data_export_student_submission_student_' + new Date().toLocaleDateString().replace(/\//g, '-') + '_' + new Date().toLocaleTimeString().replace(/:/g, '-'),
+                        filename: 'react_data_export_student_submission_student_' + new Date()
+                            .toLocaleDateString().replace(/\//g, '-') + '_' + new Date()
+                            .toLocaleTimeString().replace(/:/g, '-'),
                         orientation: 'portrait', // 'portrait' or 'landscape'
                         pageSize: 'A4', // 'A3', 'A4', 'A5', 'LEGAL', 'LETTER' or 'TABLOID'
                         exportOptions: {
                             columns: ':visible' // Export visible columns only
                         },
-                        customize: function (doc) {
+                        customize: function(doc) {
                             doc.styles.title = {
                                 color: '#4c4c4c',
                                 fontSize: '20',
@@ -940,13 +1016,13 @@
                 "ordering": true,
                 "info": true,
                 dom: 'Bfrtip', // Needs to include 'B' for buttons
-                buttons: [
-                    {
+                buttons: [{
                         extend: 'excelHtml5',
                         text: 'Export to Excel',
                         title: 'Data Export REACT',
-                        filename: 'react_data_export_progress_student_' + new Date().toLocaleDateString() + '_' + new Date().toLocaleTimeString(),
-                        customize: function (xlsx) {
+                        filename: 'react_data_export_progress_student_' + new Date()
+                        .toLocaleDateString() + '_' + new Date().toLocaleTimeString(),
+                        customize: function(xlsx) {
                             var sheet = xlsx.xl.worksheets['sheet1.xml'];
                             // Customizations go here
                         }
@@ -955,13 +1031,15 @@
                         extend: 'pdfHtml5',
                         text: 'Export to PDF',
                         title: 'Data Export REACT',
-                        filename: 'react_data_export_progress_student_' + new Date().toLocaleDateString().replace(/\//g, '-') + '_' + new Date().toLocaleTimeString().replace(/:/g, '-'),
+                        filename: 'react_data_export_progress_student_' + new Date()
+                            .toLocaleDateString().replace(/\//g, '-') + '_' + new Date()
+                            .toLocaleTimeString().replace(/:/g, '-'),
                         orientation: 'portrait', // 'portrait' or 'landscape'
                         pageSize: 'A4', // 'A3', 'A4', 'A5', 'LEGAL', 'LETTER' or 'TABLOID'
                         exportOptions: {
                             columns: ':visible' // Export visible columns only
                         },
-                        customize: function (doc) {
+                        customize: function(doc) {
                             doc.styles.title = {
                                 color: '#4c4c4c',
                                 fontSize: '20',
@@ -983,13 +1061,13 @@
                 "ordering": true,
                 "info": true,
                 dom: 'Bfrtip', // Needs to include 'B' for buttons
-                buttons: [
-                    {
+                buttons: [{
                         extend: 'excelHtml5',
                         text: 'Export to Excel',
                         title: 'Data Export REACT',
-                        filename: 'react_data_export_progress_student_' + new Date().toLocaleDateString() + '_' + new Date().toLocaleTimeString(),
-                        customize: function (xlsx) {
+                        filename: 'react_data_export_progress_student_' + new Date()
+                        .toLocaleDateString() + '_' + new Date().toLocaleTimeString(),
+                        customize: function(xlsx) {
                             var sheet = xlsx.xl.worksheets['sheet1.xml'];
                             // Customizations go here
                         }
@@ -998,13 +1076,15 @@
                         extend: 'pdfHtml5',
                         text: 'Export to PDF',
                         title: 'Data Export REACT',
-                        filename: 'react_data_export_progress_student_' + new Date().toLocaleDateString().replace(/\//g, '-') + '_' + new Date().toLocaleTimeString().replace(/:/g, '-'),
+                        filename: 'react_data_export_progress_student_' + new Date()
+                            .toLocaleDateString().replace(/\//g, '-') + '_' + new Date()
+                            .toLocaleTimeString().replace(/:/g, '-'),
                         orientation: 'portrait', // 'portrait' or 'landscape'
                         pageSize: 'A4', // 'A3', 'A4', 'A5', 'LEGAL', 'LETTER' or 'TABLOID'
                         exportOptions: {
                             columns: ':visible' // Export visible columns only
                         },
-                        customize: function (doc) {
+                        customize: function(doc) {
                             doc.styles.title = {
                                 color: '#4c4c4c',
                                 fontSize: '20',

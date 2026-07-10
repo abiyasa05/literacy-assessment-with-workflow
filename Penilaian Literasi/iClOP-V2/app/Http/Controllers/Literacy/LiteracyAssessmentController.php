@@ -181,6 +181,7 @@ class LiteracyAssessmentController extends Controller
         return response()->json(['success' => true]);
     }
 
+
     public function submitAssessment($id)
     {
         try {
@@ -204,16 +205,7 @@ class LiteracyAssessmentController extends Controller
 
             $essayThreshold = 60;
 
-            $persistEssayResult = function (
-                $answerId,
-                $answerModel,
-                $questionId,
-                $weight,
-                $aiRelevance,
-                $aiCompleteness,
-                $aiClarity,
-                $aiFeedback
-            ) use (&$correctWeight, &$answerStatus, &$feedback, $essayThreshold) {
+            $persistEssayResult = function ($answerId, $answerModel, $questionId, $weight, $aiRelevance, $aiCompleteness, $aiClarity, $aiFeedback, $evaluationDetails = []) use (&$correctWeight, &$answerStatus, &$feedback, $essayThreshold) {
                 $aiPercentage = round(($aiRelevance + $aiCompleteness + $aiClarity) / 3, 2);
                 $isCorrectEssay = $aiPercentage >= $essayThreshold;
                 $essayScore = ($aiPercentage / 100) * $weight;
@@ -222,11 +214,12 @@ class LiteracyAssessmentController extends Controller
                 $answerStatus[$answerId] = $isCorrectEssay;
 
                 $feedbackPayload = [
-                    'text' => $aiFeedback,
+                    'feedback' => $aiFeedback,
                     'ai_score' => $aiPercentage,
                     'relevansi' => $aiRelevance,
                     'kelengkapan' => $aiCompleteness,
                     'kejelasan' => $aiClarity,
+                    'evaluation' => $evaluationDetails,
                 ];
 
                 $answerModel->feedback = json_encode($feedbackPayload);
@@ -234,11 +227,16 @@ class LiteracyAssessmentController extends Controller
 
                 $feedback[] = [
                     'question_id' => $questionId,
+
                     'feedback' => $aiFeedback,
+
                     'ai_score' => $aiPercentage,
+
                     'relevansi' => $aiRelevance,
                     'kelengkapan' => $aiCompleteness,
                     'kejelasan' => $aiClarity,
+
+                    'evaluation' => $evaluationDetails,
                 ];
             };
 
@@ -282,9 +280,12 @@ class LiteracyAssessmentController extends Controller
                     $expectedAnswer = $question->essay_answer ?? '';
 
                     // Pastikan tipe data adalah string
-                    if (!is_string($questionText)) $questionText = '';
-                    if (!is_string($userAnswer)) $userAnswer = '';
-                    if (!is_string($expectedAnswer)) $expectedAnswer = '';
+                    if (!is_string($questionText))
+                        $questionText = '';
+                    if (!is_string($userAnswer))
+                        $userAnswer = '';
+                    if (!is_string($expectedAnswer))
+                        $expectedAnswer = '';
 
                     // Trim dan validasi
                     $questionText = trim($questionText);
@@ -349,7 +350,7 @@ class LiteracyAssessmentController extends Controller
                 $loopCount = 0;
 
                 foreach ($essayPayload as $index => $essay) {
-                    
+
                     $loopCount++;
                     Log::info("=== LOOP ITERATION {$loopCount} START ===", ['answer_id' => $essay['answer_id'] ?? 'unknown']);
 
@@ -357,16 +358,16 @@ class LiteracyAssessmentController extends Controller
                         $essay['user_answer'] ?? '',
                         $essay['expected_answer'] ?? ''
                     );
-                    
+
                     try {
                         $totalEssays = count($essayPayload);
                         $currentNumber = $index + 1;
-                        
+
                         // Safety check untuk logging
                         $qtLen = is_string($essay['question_text'] ?? null) ? strlen($essay['question_text']) : 0;
                         $uaLen = is_string($essay['user_answer'] ?? null) ? strlen($essay['user_answer']) : 0;
                         $eaLen = is_string($essay['expected_answer'] ?? null) ? strlen($essay['expected_answer']) : 0;
-                        
+
                         Log::info("Processing essay {$currentNumber}/{$totalEssays}", [
                             'answer_id' => $essay['answer_id'] ?? 'unknown',
                             'question_text_length' => $qtLen,
@@ -377,7 +378,7 @@ class LiteracyAssessmentController extends Controller
                         Log::info("Sending HTTP request to N8N for answer_id: " . ($essay['answer_id'] ?? 'unknown'));
 
                         $response = Http::timeout(300)->post(
-                            'http://localhost:5678/webhook/ai-gateway-rag',
+                            'http://192.168.60.24:5678/webhook/ai-gateway-rag',
                             [
                                 'action' => 'score',
                                 'answer_id' => $essay['answer_id'],
@@ -410,20 +411,21 @@ class LiteracyAssessmentController extends Controller
                                 $fallbackScore,
                                 $fallbackScore,
                                 $fallbackScore,
-                                'Penilaian AI tidak tersedia, menggunakan skor fallback berdasarkan kemiripan jawaban.'
+                                'Penilaian AI tidak tersedia, menggunakan skor fallback berdasarkan kemiripan jawaban.',
+                                []
                             );
 
                             continue;
                         }
 
                         $result = $this->parseN8nEssayResponse($response);
-                        
+
                         Log::info("N8N response parsed", [
                             'answer_id' => $essay['answer_id'],
                             'is_array' => is_array($result),
                             'keys' => is_array($result) ? array_keys($result) : 'not array'
                         ]);
-                        
+
                         if (!is_array($result)) {
                             Log::error('N8N response is not JSON array', [
                                 'response' => $response->body(),
@@ -456,11 +458,13 @@ class LiteracyAssessmentController extends Controller
                         $answerModel = $answerData['model'];
                         $weight = $answerData['weight'];
 
-                        // Ambil nilai ketiga aspek dari respons N8N
-                        $aiRelevance = floatval($result['relevansi'] ?? 0);
-                        $aiCompleteness = floatval($result['kelengkapan'] ?? 0);
-                        $aiClarity = floatval($result['kejelasan'] ?? 0);
-                        $aiFeedback = $result['feedback'] ?? '';
+                        $normalizedEssayResult = $this->normalizeEssayScoringResult($result);
+
+                        $aiRelevance = $normalizedEssayResult['relevansi'];
+                        $aiCompleteness = $normalizedEssayResult['kelengkapan'];
+                        $aiClarity = $normalizedEssayResult['kejelasan'];
+                        $aiFeedback = $normalizedEssayResult['feedback'];
+                        $evaluationDetails = $normalizedEssayResult['evaluation'];
 
                         $persistEssayResult(
                             $answerId,
@@ -470,7 +474,8 @@ class LiteracyAssessmentController extends Controller
                             $aiRelevance,
                             $aiCompleteness,
                             $aiClarity,
-                            $aiFeedback
+                            $aiFeedback,
+                            $evaluationDetails
                         );
 
                         Log::info('Essay graded successfully', [
@@ -484,7 +489,7 @@ class LiteracyAssessmentController extends Controller
                         $successCount++;
 
                         // Removed delay untuk testing - n8n harus bisa handle concurrent requests
-                        
+
                         Log::info("=== LOOP ITERATION {$loopCount} END (SUCCESS) ===");
 
                     } catch (\Exception $e) {
@@ -505,7 +510,8 @@ class LiteracyAssessmentController extends Controller
                             $fallbackScore,
                             $fallbackScore,
                             $fallbackScore,
-                            'Penilaian AI gagal, menggunakan skor fallback berdasarkan kemiripan jawaban.'
+                            'Penilaian AI gagal, menggunakan skor fallback berdasarkan kemiripan jawaban.',
+                            []
                         );
 
                         Log::info("=== LOOP ITERATION {$loopCount} END (FAILED) ===");
@@ -767,7 +773,7 @@ class LiteracyAssessmentController extends Controller
         $decodedBody = $tryDecode($body);
 
         if (is_array($decodedBody)) {
-            if (isset($decodedBody['relevansi']) || isset($decodedBody['kelengkapan']) || isset($decodedBody['kejelasan']) || isset($decodedBody['feedback'])) {
+            if (isset($decodedBody['relevansi']) || isset($decodedBody['kelengkapan']) || isset($decodedBody['kejelasan']) || isset($decodedBody['feedback']) || isset($decodedBody['evaluation'])) {
                 return $decodedBody;
             }
 
@@ -792,5 +798,41 @@ class LiteracyAssessmentController extends Controller
         }
 
         return null;
+    }
+
+    private function normalizeEssayScoringResult(array $result): array
+    {
+        $relevance = floatval($result['relevansi'] ?? $result['relevance']['score'] ?? 0);
+        $completeness = floatval($result['kelengkapan'] ?? $result['completeness']['score'] ?? 0);
+        $clarity = floatval($result['kejelasan'] ?? $result['clarity']['score'] ?? 0);
+        $feedback = (string) ($result['feedback'] ?? $result['text'] ?? '');
+
+        $evaluation = $result['evaluation'] ?? [];
+        if (!is_array($evaluation)) {
+            $evaluation = [];
+        }
+
+        $normalizedEvaluation = [
+            'relevance' => [
+                'score' => $evaluation['relevance']['score'] ?? $relevance,
+                'justification' => $evaluation['relevance']['justification'] ?? $result['relevance']['justification'] ?? null,
+            ],
+            'clarity' => [
+                'score' => $evaluation['clarity']['score'] ?? $clarity,
+                'justification' => $evaluation['clarity']['justification'] ?? $result['clarity']['justification'] ?? null,
+            ],
+            'completeness' => [
+                'score' => $evaluation['completeness']['score'] ?? $completeness,
+                'justification' => $evaluation['completeness']['justification'] ?? $result['completeness']['justification'] ?? null,
+            ],
+        ];
+
+        return [
+            'relevansi' => $relevance,
+            'kelengkapan' => $completeness,
+            'kejelasan' => $clarity,
+            'feedback' => $feedback,
+            'evaluation' => $normalizedEvaluation,
+        ];
     }
 }

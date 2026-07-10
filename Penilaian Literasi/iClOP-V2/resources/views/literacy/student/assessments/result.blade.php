@@ -193,7 +193,6 @@
     <script src="https://cdn.datatables.net/buttons/2.0.0/js/buttons.html5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script>
-
         // Define the font files in base64
         var robotoRegularBase64 = 'BASE64_STRING_OF_ROBOTO_REGULAR';
         var robotoBoldBase64 = 'BASE64_STRING_OF_ROBOTO_BOLD';
@@ -276,7 +275,7 @@
                                     </p>
                                 </div>
                                 <div class="col">
-                                    <img src="{{asset('./images/literacy/literacy.png')}}" alt="learning-logo"
+                                    <img src="{{ asset('./images/literacy/literacy.png') }}" alt="learning-logo"
                                         style="height: 45px;">
                                 </div>
                             </div>
@@ -416,9 +415,11 @@
                         <ul class="list-group mt-4">
                             @php
                                 $questionTypeOrder = ['multiple_choice' => 1, 'ordering' => 2, 'essay' => 3];
-                                $sortedQuestions = collect($questions)->sortBy(function ($q) use ($questionTypeOrder) {
-                                    return $questionTypeOrder[$q->type] ?? 999;
-                                })->values();
+                                $sortedQuestions = collect($questions)
+                                    ->sortBy(function ($q) use ($questionTypeOrder) {
+                                        return $questionTypeOrder[$q->type] ?? 999;
+                                    })
+                                    ->values();
                             @endphp
 
                             @foreach ($sortedQuestions as $index => $question)
@@ -434,8 +435,15 @@
                                     $kutipan = null;
                                     $pertanyaanBersih = $questionText;
 
-                                    if (Str::contains($questionText, 'Bacalah kutipan berikut:') || Str::contains($questionText, 'Bacalah paragraf berikut:')) {
-                                        preg_match('/Bacalah (kutipan|paragraf) berikut:\s*"(.*?)"\s*(.*)/s', $questionText, $matches);
+                                    if (
+                                        Str::contains($questionText, 'Bacalah kutipan berikut:') ||
+                                        Str::contains($questionText, 'Bacalah paragraf berikut:')
+                                    ) {
+                                        preg_match(
+                                            '/Bacalah (kutipan|paragraf) berikut:\s*"(.*?)"\s*(.*)/s',
+                                            $questionText,
+                                            $matches,
+                                        );
                                         if (count($matches) >= 4) {
                                             $kutipan = trim($matches[2]);
                                             $pertanyaanBersih = trim($matches[3]);
@@ -457,10 +465,12 @@
                                             $maybe = @json_decode($rawAnswerFeedback, true);
                                             if (is_array($maybe) && isset($maybe['ai_score'])) {
                                                 $essayFeedback = [
-                                                    'relevansi' => $maybe['relevansi'] ?? ($maybe['relevance'] ?? 0),
-                                                    'kelengkapan' => $maybe['kelengkapan'] ?? ($maybe['completeness'] ?? 0),
-                                                    'kejelasan' => $maybe['kejelasan'] ?? ($maybe['clarity'] ?? 0),
-                                                    'ai_score' => $maybe['ai_score'],
+                                                    'relevansi' => $maybe['relevansi'] ?? 0,
+                                                    'kelengkapan' => $maybe['kelengkapan'] ?? 0,
+                                                    'kejelasan' => $maybe['kejelasan'] ?? 0,
+                                                    'ai_score' => $maybe['ai_score'] ?? 0,
+                                                    'feedback' => $maybe['feedback'] ?? '',
+                                                    'evaluation' => $maybe['evaluation'] ?? [],
                                                 ];
                                                 $rawAnswerFeedback = $maybe['text'] ?? $rawAnswerFeedback;
                                             }
@@ -472,7 +482,7 @@
                                             $isCorrect = $answerStatus[$answer->id] ?? false;
                                         }
                                     } else {
-                                        $isCorrect = $answer ? ($answerStatus[$answer->id] ?? false) : false;
+                                        $isCorrect = $answer ? $answerStatus[$answer->id] ?? false : false;
                                     }
                                 @endphp
 
@@ -511,37 +521,105 @@
 
                                             @if ($question->type === 'essay')
                                                 @if ($essayFeedback)
-                                                    <div class="mt-3 p-3 bg-light rounded">
-                                                        <strong>AI Assessment Score:</strong>
-                                                        <div class="mt-2">
-                                                            <small>
-                                                                <div>Relevance: <strong>{{ $essayFeedback['relevansi'] ?? 0 }}%</strong></div>
-                                                                <div>Completeness: <strong>{{ $essayFeedback['kelengkapan'] ?? 0 }}%</strong></div>
-                                                                <div>Clarity: <strong>{{ $essayFeedback['kejelasan'] ?? 0 }}%</strong></div>
-                                                                <div class="mt-2 border-top pt-2">Final Score: <strong class="text-primary">{{ $essayFeedback['ai_score'] ?? 0 }}%</strong></div>
-                                                            </small>
+                                                    <div class="card mt-3 shadow-sm">
+                                                        <div class="card-body">
+
+                                                            <h6 class="fw-bold mb-3">
+                                                                AI Assessment
+                                                            </h6>
+
+                                                            <div class="mb-3">
+
+                                                                <strong>Relevansi</strong>
+
+                                                                <div>
+                                                                    Skor :
+                                                                    <span class="badge bg-primary">
+                                                                        {{ $essayFeedback['relevansi'] ?? 0 }}
+                                                                    </span>
+                                                                </div>
+
+                                                                <div class="text-muted mt-1">
+                                                                    {{ $essayFeedback['evaluation']['relevance']['justification'] ?? '-' }}
+                                                                </div>
+
+                                                            </div>
+
+                                                            <hr>
+
+                                                            <div class="mb-3">
+
+                                                                <strong>Kelengkapan</strong>
+
+                                                                <div>
+                                                                    Skor :
+                                                                    <span class="badge bg-primary">
+                                                                        {{ $essayFeedback['kelengkapan'] ?? 0 }}
+                                                                    </span>
+                                                                </div>
+
+                                                                <div class="text-muted mt-1">
+                                                                    {{ $essayFeedback['evaluation']['completeness']['justification'] ?? '-' }}
+                                                                </div>
+
+                                                            </div>
+
+                                                            <hr>
+
+                                                            <div class="mb-3">
+
+                                                                <strong>Kejelasan</strong>
+
+                                                                <div>
+                                                                    Skor :
+                                                                    <span class="badge bg-primary">
+                                                                        {{ $essayFeedback['kejelasan'] ?? 0 }}
+                                                                    </span>
+                                                                </div>
+
+                                                                <div class="text-muted mt-1">
+                                                                    {{ $essayFeedback['evaluation']['clarity']['justification'] ?? '-' }}
+                                                                </div>
+
+                                                            </div>
+
                                                         </div>
                                                     </div>
                                                 @endif
 
-                                                {{-- @if (! $isCorrect && !empty($essayFeedbackData['text']))
+                                                <hr>
+
+                                                <div class="mb-3">
+
+                                                    <strong>Skor Akhir</strong>
+
+                                                    <span class="badge bg-primary">
+                                                        {{ number_format($essayFeedback['ai_score'] ?? 0, 0) }}%
+                                                    </span>
+
+                                                </div>
+
+                                                {{-- @if (!$isCorrect && !empty($essayFeedbackData['text']))
                                                     <div class="mt-3 alert alert-warning">
                                                         <strong>Feedback AI:</strong>
                                                         <div class="mt-1">{{ $essayFeedbackData['text'] }}</div>
                                                     </div>
                                                 @endif --}}
 
-                                                @if (!$isCorrect && $rawAnswerFeedback)
+                                                @if (!$isCorrect && !empty($essayFeedback['feedback']))
                                                     <div class="mt-3 alert alert-warning">
                                                         <strong>Feedback AI:</strong>
-                                                        <div class="mt-1">{{ $rawAnswerFeedback}}</div>
+                                                        <div class="mt-1">
+                                                            {{ $essayFeedback['feedback'] }}
+                                                        </div>
                                                     </div>
                                                 @endif
                                             @endif
                                         </div>
 
                                         <div class="col-auto pt-2">
-                                            <span class="badge {{ $isCorrect ? 'bg-success' : 'bg-danger' }} px-3 py-2">
+                                            <span
+                                                class="badge {{ $isCorrect ? 'bg-success' : 'bg-danger' }} px-3 py-2">
                                                 {{ $isCorrect ? 'Correct ✅' : 'Incorrect ❌' }}
                                             </span>
                                         </div>
@@ -577,7 +655,7 @@
     </div>
 
     <script>
-        document.getElementById('toggleSidebar').addEventListener('click', function () {
+        document.getElementById('toggleSidebar').addEventListener('click', function() {
             var sidebar = document.getElementById('sidebarMenu');
             sidebar.classList.toggle('active');
         });
@@ -612,7 +690,7 @@
         });
     </script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             var ctx = document.getElementById('piechart').getContext('2d');
             var chart = new Chart(ctx, {
                 type: 'pie',
@@ -631,7 +709,7 @@
                         },
                         tooltip: {
                             callbacks: {
-                                label: function (tooltipItem) {
+                                label: function(tooltipItem) {
                                     return tooltipItem.label + ': ' + tooltipItem.raw + ' Jawaban';
                                 }
                             }
@@ -657,21 +735,21 @@
             window.location.href = "{{ route('php_material_detail') }}?phpid=" + id + "&start=" + controller;
 
             /*$.ajax({
-                type: "POST",
-                data: {
-                    id: id,
-                    title: title,
-                    _token: csrfToken // Add CSRF token to request data
-                },
-                dataType: 'html',
-                url: "{{ route('php_material_detail') }}",
-            success: function(res) {
+                    type: "POST",
+                    data: {
+                        id: id,
+                        title: title,
+                        _token: csrfToken // Add CSRF token to request data
+                    },
+                    dataType: 'html',
+                    url: "{{ route('php_material_detail') }}",
+                success: function(res) {
 
-            },
-            error: function(xhr, status, error) {
-                console.error("Error:", error);
-            }
-        });*/
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", error);
+                }
+            });*/
         }
 
         // Function to change icon, text, and link colors to blue
@@ -702,37 +780,37 @@
 
         // Add event listener to each link
         var manageUsersLink = document.getElementById('manageUsersLink');
-        manageUsersLink.addEventListener('click', function () {
+        manageUsersLink.addEventListener('click', function() {
             changeColor('manageUsers');
         });
 
         var manageMaterialsLink = document.getElementById('manageMaterialsLink');
-        manageMaterialsLink.addEventListener('click', function () {
+        manageMaterialsLink.addEventListener('click', function() {
             changeColor('manageMaterials');
         });
 
         var manageMaterialsLink = document.getElementById('manageQuestionsLink');
-        manageQuestionsLink.addEventListener('click', function () {
+        manageQuestionsLink.addEventListener('click', function() {
             changeColor('manageQuestions');
         });
 
         var startLearningLink = document.getElementById('learningLink');
-        startLearningLink.addEventListener('click', function () {
+        startLearningLink.addEventListener('click', function() {
             changeColor('learning');
         });
 
         var validationLink = document.getElementById('validationLink');
-        validationLink.addEventListener('click', function () {
+        validationLink.addEventListener('click', function() {
             changeColor('validation');
         });
 
         var rankLink = document.getElementById('rankLink');
-        rankLink.addEventListener('click', function () {
+        rankLink.addEventListener('click', function() {
             changeColor('rank');
         });
 
         var settingsLink = document.getElementById('settingsLink');
-        settingsLink.addEventListener('click', function () {
+        settingsLink.addEventListener('click', function() {
             changeColor('settings');
         });
 
@@ -765,14 +843,14 @@
         }
 
         //  Change TAB
-        $(document).ready(function () {
-            $('#users-tab').on('click', function (e) {
+        $(document).ready(function() {
+            $('#users-tab').on('click', function(e) {
                 e.preventDefault();
                 $('#materials-tab').removeClass('active');
                 $(this).tab('show');
             });
 
-            $('#materials-tab').on('click', function (e) {
+            $('#materials-tab').on('click', function(e) {
                 e.preventDefault();
                 $('#users-tab').removeClass('active');
                 $(this).tab('show');
@@ -780,27 +858,27 @@
         });
     </script>
     <script>
-        $(document).ready(function () {
-            $("#dropdownContainer").click(function () {
+        $(document).ready(function() {
+            $("#dropdownContainer").click(function() {
                 $("#dropdownContainer").toggleClass("active");
             });
-            $("#dropdownContent").click(function (e) {
+            $("#dropdownContent").click(function(e) {
                 e.stopPropagation();
             });
-            $(document).click(function () {
+            $(document).click(function() {
                 $("#dropdownContainer").removeClass("active");
             });
         });
     </script>
     <script>
-        $(document).ready(function () {
-            $("#dropdownContainer").click(function () {
+        $(document).ready(function() {
+            $("#dropdownContainer").click(function() {
                 $("#dropdownContainer").toggleClass("active");
             });
-            $("#dropdownContent").click(function (e) {
+            $("#dropdownContent").click(function(e) {
                 e.stopPropagation();
             });
-            $(document).click(function () {
+            $(document).click(function() {
                 $("#dropdownContainer").removeClass("active");
             });
             $('#progressTable').DataTable({
@@ -809,13 +887,13 @@
                 "ordering": true,
                 "info": true,
                 dom: 'Bfrtip', // Needs to include 'B' for buttons
-                buttons: [
-                    {
+                buttons: [{
                         extend: 'excelHtml5',
                         text: 'Export to Excel',
                         title: 'Data Export REACT',
-                        filename: 'react_data_export_topic_finished_student_' + new Date().toLocaleDateString() + '_' + new Date().toLocaleTimeString(),
-                        customize: function (xlsx) {
+                        filename: 'react_data_export_topic_finished_student_' + new Date()
+                            .toLocaleDateString() + '_' + new Date().toLocaleTimeString(),
+                        customize: function(xlsx) {
                             var sheet = xlsx.xl.worksheets['sheet1.xml'];
                             // Customizations go here
                         }
@@ -829,13 +907,13 @@
                 "ordering": true,
                 "info": true,
                 dom: 'Bfrtip', // Needs to include 'B' for buttons
-                buttons: [
-                    {
+                buttons: [{
                         extend: 'excelHtml5',
                         text: 'Export to Excel',
                         title: 'Data Export REACT',
-                        filename: 'react_data_export_student_submission_student_' + new Date().toLocaleDateString() + '_' + new Date().toLocaleTimeString(),
-                        customize: function (xlsx) {
+                        filename: 'react_data_export_student_submission_student_' + new Date()
+                            .toLocaleDateString() + '_' + new Date().toLocaleTimeString(),
+                        customize: function(xlsx) {
                             var sheet = xlsx.xl.worksheets['sheet1.xml'];
                             // Customizations go here
                         }
@@ -844,13 +922,15 @@
                         extend: 'pdfHtml5',
                         text: 'Export to PDF',
                         title: 'Data Export REACT',
-                        filename: 'react_data_export_student_submission_student_' + new Date().toLocaleDateString().replace(/\//g, '-') + '_' + new Date().toLocaleTimeString().replace(/:/g, '-'),
+                        filename: 'react_data_export_student_submission_student_' + new Date()
+                            .toLocaleDateString().replace(/\//g, '-') + '_' + new Date()
+                            .toLocaleTimeString().replace(/:/g, '-'),
                         orientation: 'portrait', // 'portrait' or 'landscape'
                         pageSize: 'A4', // 'A3', 'A4', 'A5', 'LEGAL', 'LETTER' or 'TABLOID'
                         exportOptions: {
                             columns: ':visible' // Export visible columns only
                         },
-                        customize: function (doc) {
+                        customize: function(doc) {
                             doc.styles.title = {
                                 color: '#4c4c4c',
                                 fontSize: '20',
@@ -872,13 +952,13 @@
                 "ordering": true,
                 "info": true,
                 dom: 'Bfrtip', // Needs to include 'B' for buttons
-                buttons: [
-                    {
+                buttons: [{
                         extend: 'excelHtml5',
                         text: 'Export to Excel',
                         title: 'Data Export REACT',
-                        filename: 'react_data_export_progress_student_' + new Date().toLocaleDateString() + '_' + new Date().toLocaleTimeString(),
-                        customize: function (xlsx) {
+                        filename: 'react_data_export_progress_student_' + new Date()
+                        .toLocaleDateString() + '_' + new Date().toLocaleTimeString(),
+                        customize: function(xlsx) {
                             var sheet = xlsx.xl.worksheets['sheet1.xml'];
                             // Customizations go here
                         }
@@ -887,13 +967,15 @@
                         extend: 'pdfHtml5',
                         text: 'Export to PDF',
                         title: 'Data Export REACT',
-                        filename: 'react_data_export_progress_student_' + new Date().toLocaleDateString().replace(/\//g, '-') + '_' + new Date().toLocaleTimeString().replace(/:/g, '-'),
+                        filename: 'react_data_export_progress_student_' + new Date()
+                            .toLocaleDateString().replace(/\//g, '-') + '_' + new Date()
+                            .toLocaleTimeString().replace(/:/g, '-'),
                         orientation: 'portrait', // 'portrait' or 'landscape'
                         pageSize: 'A4', // 'A3', 'A4', 'A5', 'LEGAL', 'LETTER' or 'TABLOID'
                         exportOptions: {
                             columns: ':visible' // Export visible columns only
                         },
-                        customize: function (doc) {
+                        customize: function(doc) {
                             doc.styles.title = {
                                 color: '#4c4c4c',
                                 fontSize: '20',
@@ -915,13 +997,13 @@
                 "ordering": true,
                 "info": true,
                 dom: 'Bfrtip', // Needs to include 'B' for buttons
-                buttons: [
-                    {
+                buttons: [{
                         extend: 'excelHtml5',
                         text: 'Export to Excel',
                         title: 'Data Export REACT',
-                        filename: 'react_data_export_progress_student_' + new Date().toLocaleDateString() + '_' + new Date().toLocaleTimeString(),
-                        customize: function (xlsx) {
+                        filename: 'react_data_export_progress_student_' + new Date()
+                        .toLocaleDateString() + '_' + new Date().toLocaleTimeString(),
+                        customize: function(xlsx) {
                             var sheet = xlsx.xl.worksheets['sheet1.xml'];
                             // Customizations go here
                         }
@@ -930,13 +1012,15 @@
                         extend: 'pdfHtml5',
                         text: 'Export to PDF',
                         title: 'Data Export REACT',
-                        filename: 'react_data_export_progress_student_' + new Date().toLocaleDateString().replace(/\//g, '-') + '_' + new Date().toLocaleTimeString().replace(/:/g, '-'),
+                        filename: 'react_data_export_progress_student_' + new Date()
+                            .toLocaleDateString().replace(/\//g, '-') + '_' + new Date()
+                            .toLocaleTimeString().replace(/:/g, '-'),
                         orientation: 'portrait', // 'portrait' or 'landscape'
                         pageSize: 'A4', // 'A3', 'A4', 'A5', 'LEGAL', 'LETTER' or 'TABLOID'
                         exportOptions: {
                             columns: ':visible' // Export visible columns only
                         },
-                        customize: function (doc) {
+                        customize: function(doc) {
                             doc.styles.title = {
                                 color: '#4c4c4c',
                                 fontSize: '20',
