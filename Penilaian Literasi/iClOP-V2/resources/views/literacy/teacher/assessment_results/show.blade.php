@@ -370,7 +370,7 @@
                 @php
                     $totalBenar = 0;
                     $totalSalah = 0;
-                    $essayThreshold = 60;
+                    $essayThreshold = 70;
 
                     $normalize = function ($text) {
                         $text = strtolower($text);

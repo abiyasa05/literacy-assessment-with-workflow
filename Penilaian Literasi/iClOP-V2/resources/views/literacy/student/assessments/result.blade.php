@@ -332,7 +332,7 @@
                 @php
                     $totalBenar = 0;
                     $totalSalah = 0;
-                    $essayThreshold = 60;
+                    $essayThreshold = 70;
 
                     foreach ($questions as $question) {
                         $answer = $question->answers->first();
@@ -426,7 +426,7 @@
                                 @php
                                     $answer = $question->answers->first();
                                     $isCorrect = false;
-                                    $essayThreshold = 60;
+                                    $essayThreshold = 70;
                                     $assessmentFeedback = json_decode($assessment->feedback, true) ?? [];
                                     $rawAnswerFeedback = optional($answer)->feedback;
                                     $essayFeedback = null;

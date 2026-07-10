@@ -203,7 +203,7 @@ class LiteracyAssessmentController extends Controller
             $feedback = [];
             $answerStatus = [];
 
-            $essayThreshold = 60;
+            $essayThreshold = 70;
 
             $persistEssayResult = function ($answerId, $answerModel, $questionId, $weight, $aiRelevance, $aiCompleteness, $aiClarity, $aiFeedback, $evaluationDetails = []) use (&$correctWeight, &$answerStatus, &$feedback, $essayThreshold) {
                 $aiPercentage = round(($aiRelevance + $aiCompleteness + $aiClarity) / 3, 2);
@@ -634,7 +634,7 @@ class LiteracyAssessmentController extends Controller
         $answerStatus = [];
         $answers = LiteracyAnswer::where('assessment_id', $assessmentId)->get();
         $assessment = LiteracyAssessment::find($assessmentId);
-        $essayThreshold = 60; // %
+        $essayThreshold = 70; // %
 
         $normalizeText = function ($text) {
             $text = strtolower($text);
@@ -679,7 +679,7 @@ class LiteracyAssessmentController extends Controller
                     }
                 }
 
-                $baselineCorrect = $maxMatchPercent >= 60;
+                $baselineCorrect = $maxMatchPercent >= 70;
 
                 // Cek apakah ada AI score dalam feedback data
                 $aiScore = null;
