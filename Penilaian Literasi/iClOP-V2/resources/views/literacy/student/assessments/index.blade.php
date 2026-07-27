@@ -332,10 +332,10 @@
                             <table id="progressTable" class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th>No</th>
+                                        <th>Nu</th>
                                         <th>Status</th>
-                                        <th>Skor</th>
-                                        <th>Tindakan</th>
+                                        <th>Score</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -349,39 +349,39 @@
                                                     @else bg-secondary
                                                     @endif">
                                                     @if ($assessment->status == 'completed')
-                                                        Selesai
+                                                        Completed
                                                     @elseif ($assessment->status == 'in_progress')
-                                                        Dalam Pengerjaan
+                                                        In Progress
                                                     @else
-                                                        Belum Dikerjakan
+                                                        Not done yet
                                                     @endif
                                                 </span>
                                             </td>
-                                            <td>{{ $assessment->score ?? 'Belum Dinilai' }}</td>
+                                            <td>{{ $assessment->score ?? 'Not rated yet' }}</td>
                                             <td>
                                                 @if ($assessment->status == 'pending')
                                                     <form id="startForm-{{ $assessment->id }}" action="{{ route('literacy_assessments_start', $assessment->id) }}" method="POST" target="_blank" style="display:inline;">
                                                         @csrf
                                                         <button type="button" class="btn btn-sm btn-primary text-white"
                                                             onclick="document.getElementById('startForm-{{ $assessment->id }}').submit();">
-                                                            Mulai
+                                                            Start
                                                         </button>
                                                     </form>
                                                 @elseif ($assessment->status == 'in_progress')
                                                     <a href="{{ route('literacy_assessments_continue', $assessment->id) }}" 
                                                         class="btn btn-sm btn-warning text-white" target="_blank">
-                                                        Lanjutkan
+                                                        Continue
                                                     </a>
                                                 @else
                                                     <button onclick="openAssessmentResult('{{ route('literacy_assessment_result', $assessment->id) }}')" class="btn btn-sm btn-success">
-                                                        Lihat Hasil
+                                                        Show Result
                                                     </button>
                                                 @endif
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="4" class="text-center text-muted">Belum ada asesmen</td>
+                                            <td colspan="4" class="text-center text-muted">No assessment yet</td>
                                         </tr>
                                     @endforelse
                                 </tbody>                                
