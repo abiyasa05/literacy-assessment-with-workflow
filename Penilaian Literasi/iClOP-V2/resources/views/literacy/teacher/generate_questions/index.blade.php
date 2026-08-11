@@ -1560,18 +1560,18 @@
 
                 document.getElementById('storyContent').innerHTML = `
                     <p class="text-muted mb-0">
-                        Teks cerita akan ditampilkan di sini setelah soal berhasil dibuat.
+                        The story text will be displayed here after the questions are generated.
                     </p>
                 `;
 
                 document.getElementById('questionCountLabel').innerText =
-                    "Belum ada soal";
+                    "No questions yet";
 
                 contentElement.innerHTML = `
                     <div class="empty-question-state">
                         <i class="bi bi-robot"></i>
                         <p>
-                            Hasil generate soal akan muncul di sini...
+                            The generated questions will appear here...
                         </p>
                     </div>
                 `;
