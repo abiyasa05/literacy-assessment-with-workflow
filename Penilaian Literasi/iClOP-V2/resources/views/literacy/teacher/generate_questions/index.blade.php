@@ -833,11 +833,7 @@
                                             name="question_count" min="1" max="20" value="5" required>
                                     </div>
 
-                                    {{-- <div
-                                        style="border: 1px solid #ccc; border-radius: 8px; padding: 1rem; background: #f8f9fa; max-height: 300px; overflow-y: auto;">
-                                        <pre
-                                            style="margin: 0; white-space: pre-wrap; text-align: left;"><code id="content">{{ $latestGeneratedText->generate_text ?? 'The generated questions will appear here...' }}</code></pre>
-                                    </div> --}}
+                                    <textarea id="latestGeneratedRawText" class="d-none">{{ $latestGeneratedText->generate_text ?? '' }}</textarea>
 
                                     <!-- Generated Questions Output -->
                                     <div id="generatedQuestionsContainer" class="generated-questions-wrapper">
@@ -898,7 +894,7 @@
 
                                         <!-- Plain Text View -->
                                         <div id="plainTextView" class="plain-text-view">
-                                            <textarea id="plainTextArea" readonly placeholder="The plain text generated will appear here..."></textarea>
+                                            <textarea id="plainTextArea" readonly placeholder="Teks polos hasil generate akan muncul di sini..."></textarea>
                                         </div>
 
                                     </div>
@@ -1043,7 +1039,7 @@
                     if (!buttonEl) return;
                     const originalHtml = buttonEl.innerHTML;
                     buttonEl.classList.add('copied');
-                    buttonEl.innerHTML = '<i class="bi bi-check2"></i> Disalin!';
+                    buttonEl.innerHTML = '<i class="bi bi-check2"></i> Copied!';
                     setTimeout(() => {
                         buttonEl.classList.remove('copied');
                         buttonEl.innerHTML = originalHtml;
@@ -1086,11 +1082,15 @@
 
                 if (active) {
                     questionsScrollArea.classList.add('hidden-view');
+                    questionsScrollArea.style.display = 'none';
                     plainTextView.classList.add('active');
+                    plainTextView.style.display = 'block';
                     togglePlainTextBtn.innerHTML = '<i class="bi bi-grid"></i> Widget View';
                 } else {
                     questionsScrollArea.classList.remove('hidden-view');
+                    questionsScrollArea.style.display = '';
                     plainTextView.classList.remove('active');
+                    plainTextView.style.display = 'none';
                     togglePlainTextBtn.innerHTML = '<i class="bi bi-file-text"></i> Plain Text';
                 }
             }
@@ -1464,7 +1464,7 @@
             */
 
             questionCountLabel.innerText =
-                `${questions.length} question was successfully made`;
+                `${questions.length} soal berhasil dibuat`;
         }
 
 
@@ -1485,6 +1485,17 @@
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;");
         }
+
+            /*
+            * ==========================================
+            * Muat ulang hasil generate terakhir dari database
+            * (supaya tidak hilang saat halaman di-refresh)
+            * ==========================================
+            */
+            const latestRawTextEl = document.getElementById('latestGeneratedRawText');
+            if (latestRawTextEl && latestRawTextEl.value.trim()) {
+                renderGeneratedQuestions(latestRawTextEl.value);
+            }
 
             aiForm.addEventListener('submit', async function (event) {
                 event.preventDefault();
