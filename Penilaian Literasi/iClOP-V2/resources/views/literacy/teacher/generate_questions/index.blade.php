@@ -1464,7 +1464,7 @@
             */
 
             questionCountLabel.innerText =
-                `${questions.length} soal berhasil dibuat`;
+                `${questions.length} question was successfully made`;
         }
 
 
