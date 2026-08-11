@@ -17,7 +17,7 @@
             background-color: #FFFFFF;
             padding: 20px;
         }
-        
+
         @media (max-width: 768px) {
             #sidebarMenu {
                 position: fixed;
@@ -30,7 +30,7 @@
                 transform: translateX(-100%);
                 transition: transform 0.3s ease-in-out;
                 display: block !important;
-                box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+                box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
                 overflow-y: auto;
                 padding-top: 60px;
             }
@@ -165,16 +165,415 @@
             box-shadow: 1px 0px 8px rgba(0, 0, 0, 0.1);
             /* Menambahkan bayangan ke sisi kanan */
         }
+
+        /* =====================================================
+        AI GENERATED QUESTIONS WIDGET
+        ===================================================== */
+
+        .generated-questions-wrapper {
+            margin-top: 20px;
+        }
+
+        /* Story Widget */
+        .story-widget {
+            background: #ffffff;
+            border: 1px solid #e2e6ea;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .story-widget-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 18px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e2e6ea;
+
+            font-size: 15px;
+            font-weight: 600;
+            color: #34364A;
+        }
+
+        .story-widget-header i {
+            color: #1A79E3;
+            font-size: 18px;
+        }
+
+        .story-content {
+            padding: 18px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            line-height: 1.8;
+            color: #444;
+            white-space: pre-wrap;
+
+            /* Scroll khusus cerita */
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        /* Header Generated Questions */
+        .generated-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 5px 5px 12px 5px;
+        }
+
+        .generated-header h5 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #34364A;
+            margin: 0;
+        }
+
+        .generated-header h5 i {
+            color: #1A79E3;
+            margin-right: 5px;
+        }
+
+        /* Question scroll area */
+        .questions-scroll-area {
+            max-height: 550px;
+            overflow-y: auto;
+
+            padding: 5px 8px 15px 5px;
+
+            border-radius: 12px;
+        }
+
+        /* Custom scrollbar */
+        .questions-scroll-area::-webkit-scrollbar,
+        .story-content::-webkit-scrollbar {
+            width: 7px;
+        }
+
+        .questions-scroll-area::-webkit-scrollbar-track,
+        .story-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .questions-scroll-area::-webkit-scrollbar-thumb,
+        .story-content::-webkit-scrollbar-thumb {
+            background: #c5c5c5;
+            border-radius: 10px;
+        }
+
+        .questions-scroll-area::-webkit-scrollbar-thumb:hover,
+        .story-content::-webkit-scrollbar-thumb:hover {
+            background: #999;
+        }
+
+        /* Question Card */
+        .question-widget {
+            background: #ffffff;
+
+            border: 1px solid #e2e6ea;
+            border-radius: 12px;
+
+            padding: 18px;
+
+            margin-bottom: 14px;
+
+            box-shadow: 0 2px 7px rgba(0, 0, 0, 0.05);
+
+            transition: all 0.2s ease;
+        }
+
+        .question-widget:hover {
+            border-color: #b9d7f7;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Question Header */
+        .question-widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+
+            margin-bottom: 12px;
+        }
+
+        .question-header-tags {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .question-number {
+            font-size: 14px;
+            font-weight: 600;
+
+            color: #1A79E3;
+
+            background: #eef6ff;
+
+            padding: 6px 11px;
+
+            border-radius: 20px;
+        }
+
+        .question-weight {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+
+            font-size: 12px;
+            font-weight: 600;
+
+            color: #9a6b00;
+
+            background: #fff6e0;
+
+            padding: 5px 10px;
+
+            border-radius: 15px;
+        }
+
+        .question-aspect {
+            font-size: 12px;
+
+            color: #6c757d;
+
+            background: #f5f5f5;
+
+            padding: 5px 10px;
+
+            border-radius: 15px;
+        }
+
+        /* Question Text */
+        .question-text {
+            font-size: 15px;
+            font-weight: 500;
+
+            line-height: 1.7;
+
+            color: #34364A;
+
+            margin-bottom: 14px;
+        }
+
+        /* Answer Options */
+        .answer-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+
+            padding: 10px 12px;
+
+            margin-bottom: 8px;
+
+            border: 1px solid #e5e5e5;
+
+            border-radius: 8px;
+
+            background: #fafafa;
+
+            font-size: 14px;
+
+            line-height: 1.5;
+        }
+
+        .answer-option.correct {
+            background: #f0fff4;
+            border-color: #9ed8ad;
+        }
+
+        .option-letter {
+            min-width: 25px;
+            height: 25px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background: #e9ecef;
+
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .answer-option.correct .option-letter {
+            background: #198754;
+            color: white;
+        }
+
+        /* Correct Answer */
+        .correct-answer {
+            margin-top: 12px;
+
+            padding: 10px 12px;
+
+            background: #f0fff4;
+
+            border-radius: 8px;
+
+            color: #198754;
+
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* Essay Answer */
+        .reference-answer {
+            margin-top: 12px;
+
+            padding: 12px;
+
+            background: #f8f9fa;
+
+            border-left: 4px solid #1A79E3;
+
+            border-radius: 6px;
+
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .reference-answer strong {
+            color: #34364A;
+        }
+
+        /* Empty State */
+        .empty-question-state {
+            display: flex;
+            flex-direction: column;
+
+            justify-content: center;
+            align-items: center;
+
+            min-height: 180px;
+
+            color: #999;
+
+            text-align: center;
+        }
+
+        .empty-question-state i {
+            font-size: 40px;
+            margin-bottom: 10px;
+            color: #b8c2cc;
+        }
+
+        .empty-question-state p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        /* Copy & Plain-Text Toggle Buttons */
+        .widget-action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12.5px;
+            font-weight: 500;
+            color: #34364A;
+            background: #ffffff;
+            border: 1px solid #dbe1e8;
+            border-radius: 7px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            line-height: 1.2;
+        }
+
+        .widget-action-btn:hover {
+            background: #eef6ff;
+            border-color: #1A79E3;
+            color: #1A79E3;
+        }
+
+        .widget-action-btn.copied {
+            background: #e6f7ec;
+            border-color: #2fb866;
+            color: #1e9e56;
+        }
+
+        .story-widget-header .widget-action-btn {
+            margin-left: auto;
+        }
+
+        .generated-header-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* Plain text view */
+        .plain-text-view {
+            display: none;
+            background: #f8f9fa;
+            border: 1px solid #e2e6ea;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 5px;
+        }
+
+        .plain-text-view.active {
+            display: block;
+        }
+
+        .plain-text-view textarea {
+            width: 100%;
+            min-height: 260px;
+            max-height: 480px;
+            border: none;
+            background: transparent;
+            resize: vertical;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13.5px;
+            line-height: 1.7;
+            color: #444;
+        }
+
+        .plain-text-view textarea:focus {
+            outline: none;
+        }
+
+        .questions-scroll-area.hidden-view {
+            display: none;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+
+            .questions-scroll-area {
+                max-height: 500px;
+            }
+
+            .story-content {
+                max-height: 200px;
+            }
+
+            .question-widget {
+                padding: 14px;
+            }
+
+            .question-widget-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+        }
     </style>
 
     <title>Tab Example</title>
 
     <!-- ======  CSS  ====== -->
     <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
-        crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 
     <!-- Bootstrap Icons (untuk bi bi-check-circle-fill, dll.) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
@@ -183,7 +582,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 
     <!-- Google Font – Poppins -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
 
     <!-- Custom style -->
     <link href="style.css" rel="stylesheet">
@@ -245,28 +645,32 @@
             </div>
 
             <!-- Logo (di kanan pada mobile, tengah di desktop) -->
-            <img src="{{ asset('./images/logo.png') }}" alt="logo" width="104" height="65" class="order-md-1 order-2 ms-auto" id="logoResponsive">
+            <img src="{{ asset('./images/logo.png') }}" alt="logo" width="104" height="65"
+                class="order-md-1 order-2 ms-auto" id="logoResponsive">
 
             <!-- Menu Desktop -->
             <div class="collapse navbar-collapse order-md-2 order-3 d-none d-md-flex" id="navbarSupportedContent">
                 <div class="mx-auto">
                     <ul class="navbar-nav mb-2 mb-lg-0 justify-content-center">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="/dashboard-student">Dashboard Teacher</a>
+                            <a class="nav-link active" aria-current="page" href="/dashboard-student">Dashboard
+                                Teacher</a>
                         </li>
                     </ul>
                 </div>
                 <div class="dropdown">
                     <p style="margin-top: 10px; margin-right: 10px;">
                         {{ auth()->user()->name }}
-                        <img src="{{ asset('./images/Group.png') }}" alt="Group" style="height: 50px; margin-right: 10px;">
+                        <img src="{{ asset('./images/Group.png') }}" alt="Group"
+                            style="height: 50px; margin-right: 10px;">
                         <i class="fas fa-chevron-down" style="color: #0079FF;"></i>
-                        <div class="dropdown-content" id="dropdownContent">
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST">
-                                @csrf
-                                <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
-                            </form>
-                        </div>
+                    <div class="dropdown-content" id="dropdownContent">
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <a href="#"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                        </form>
+                    </div>
                     </p>
                 </div>
             </div>
@@ -340,7 +744,8 @@
                                         style="margin-top: 12px; margin-left: 15px; color: #676767;"></i>
                                 </div>
                                 <div class="col">
-                                    <a class="nav-link" href="{{ route('literacy_teacher_generate_questions_history') }}"
+                                    <a class="nav-link"
+                                        href="{{ route('literacy_teacher_generate_questions_history') }}"
                                         style="color: #34364A;">Generated History</a>
                                 </div>
                             </div>
@@ -428,9 +833,74 @@
                                             name="question_count" min="1" max="20" value="5" required>
                                     </div>
 
-                                    <div
+                                    {{-- <div
                                         style="border: 1px solid #ccc; border-radius: 8px; padding: 1rem; background: #f8f9fa; max-height: 300px; overflow-y: auto;">
-                                    <pre style="margin: 0; white-space: pre-wrap; text-align: left;"><code id="content">{{ $latestGeneratedText->generate_text ?? 'The generated questions will appear here...' }}</code></pre>
+                                        <pre
+                                            style="margin: 0; white-space: pre-wrap; text-align: left;"><code id="content">{{ $latestGeneratedText->generate_text ?? 'The generated questions will appear here...' }}</code></pre>
+                                    </div> --}}
+
+                                    <!-- Generated Questions Output -->
+                                    <div id="generatedQuestionsContainer" class="generated-questions-wrapper">
+
+                                        <!-- Reading Text -->
+                                        <div class="story-widget">
+                                            <div class="story-widget-header">
+                                                <i class="bi bi-book"></i>
+                                                <span>Reading Text</span>
+                                                <button type="button" class="widget-action-btn" id="copyStoryBtn">
+                                                    <i class="bi bi-clipboard"></i> Copy
+                                                </button>
+                                            </div>
+
+                                            <div id="storyContent" class="story-content">
+                                                <p class="text-muted mb-0">
+                                                    The reading text will be displayed here after the questions are successfully generated.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Question Header -->
+                                        <div class="generated-header">
+                                            <div>
+                                                <h5 class="mb-1">
+                                                    <i class="bi bi-stars"></i>
+                                                    Generated Questions
+                                                </h5>
+
+                                                <small id="questionCountLabel" class="text-muted">
+                                                    No questions generated yet.
+                                                </small>
+                                            </div>
+
+                                            <div class="generated-header-actions">
+                                                <button type="button" class="widget-action-btn" id="togglePlainTextBtn" disabled>
+                                                    <i class="bi bi-file-text"></i> Plain Text
+                                                </button>
+                                                <button type="button" class="widget-action-btn" id="copyAllBtn" disabled>
+                                                    <i class="bi bi-clipboard-check"></i> Copy All
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Scrollable Questions (Widget View) -->
+                                        <div id="questionsScrollArea" class="questions-scroll-area">
+
+                                            <div id="content" class="questions-container">
+                                                <div class="empty-question-state">
+                                                    <i class="bi bi-robot"></i>
+                                                    <p>
+                                                        The generated questions will appear here...
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <!-- Plain Text View -->
+                                        <div id="plainTextView" class="plain-text-view">
+                                            <textarea id="plainTextArea" readonly placeholder="The plain text generated will appear here..."></textarea>
+                                        </div>
+
                                     </div>
 
                                     <div class="mt-3">
@@ -451,7 +921,8 @@
                             <!-- Pilihan Materi -->
                             <div class="mb-3">
                                 <label for="material_id" class="form-label">Material</label>
-                                <select class="form-select" name="material_id" class="form-control" id="materialSelect" required>
+                                <select class="form-select" name="material_id" class="form-control" id="materialSelect"
+                                    required>
                                     <option value="">-- Choose Material --</option>
                                     @foreach ($materials as $material)
                                         <option value="{{ $material->id }}">{{ $material->title }}</option>
@@ -464,7 +935,8 @@
                                 <label for="story_text_display" class="form-label">Reading Text</label>
                                 <textarea id="story_text_display" class="form-control" rows="6" readonly></textarea>
                                 <input type="hidden" name="story_text_id" id="story_text_id">
-                                <button type="button" class="btn btn-secondary mt-2" id="btnPilihTeks">Select Reading Text</button>
+                                <button type="button" class="btn btn-secondary mt-2" id="btnPilihTeks">Select Reading
+                                    Text</button>
                             </div>
 
                             <!-- Teks Pertanyaan -->
@@ -504,7 +976,8 @@
                             </div>
 
                             <div class="d-flex justify-content-between align-items-center gap-2 mt-3">
-                                <button type="button" class="btn btn-success btn-sm" id="addOption">+ Add Answer Option</button>
+                                <button type="button" class="btn btn-success btn-sm" id="addOption">+ Add Answer
+                                    Option</button>
                                 <button type="submit" class="btn btn-primary" id="saveButton" disabled>Save</button>
                             </div>
                         </form>
@@ -536,6 +1009,17 @@
             const contentElement = document.getElementById('content');
             const resetButton = document.getElementById('resetButton');
 
+            const copyStoryBtn = document.getElementById('copyStoryBtn');
+            const copyAllBtn = document.getElementById('copyAllBtn');
+            const togglePlainTextBtn = document.getElementById('togglePlainTextBtn');
+            const questionsScrollArea = document.getElementById('questionsScrollArea');
+            const plainTextView = document.getElementById('plainTextView');
+            const plainTextArea = document.getElementById('plainTextArea');
+
+            // Menyimpan teks mentah hasil generate terakhir, supaya tetap bisa disalin
+            let lastRawGeneratedText = '';
+            let isPlainTextView = false;
+
             const loadingModalEl = document.getElementById('loadingModal');
             const loadingModal = new bootstrap.Modal(loadingModalEl, {
                 backdrop: 'static',
@@ -546,6 +1030,83 @@
             const successIcon = document.getElementById('successIcon');
             const errorIcon = document.getElementById('errorIcon');
             const loadingText = document.getElementById('loadingText');
+
+            /*
+            * ==========================================
+            * Salin ke clipboard (dengan fallback)
+            * ==========================================
+            */
+            function copyToClipboard(text, buttonEl) {
+                if (!text) return;
+
+                const finishFeedback = () => {
+                    if (!buttonEl) return;
+                    const originalHtml = buttonEl.innerHTML;
+                    buttonEl.classList.add('copied');
+                    buttonEl.innerHTML = '<i class="bi bi-check2"></i> Disalin!';
+                    setTimeout(() => {
+                        buttonEl.classList.remove('copied');
+                        buttonEl.innerHTML = originalHtml;
+                    }, 1800);
+                };
+
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(text).then(finishFeedback).catch(() => {
+                        fallbackCopy(text, finishFeedback);
+                    });
+                } else {
+                    fallbackCopy(text, finishFeedback);
+                }
+            }
+
+            function fallbackCopy(text, onDone) {
+                const tempArea = document.createElement('textarea');
+                tempArea.value = text;
+                tempArea.style.position = 'fixed';
+                tempArea.style.opacity = '0';
+                document.body.appendChild(tempArea);
+                tempArea.focus();
+                tempArea.select();
+                try {
+                    document.execCommand('copy');
+                    if (onDone) onDone();
+                } catch (err) {
+                    console.error('Gagal menyalin teks:', err);
+                }
+                document.body.removeChild(tempArea);
+            }
+
+            /*
+            * ==========================================
+            * Toggle antara tampilan widget dan teks polos
+            * ==========================================
+            */
+            function setPlainTextView(active) {
+                isPlainTextView = active;
+
+                if (active) {
+                    questionsScrollArea.classList.add('hidden-view');
+                    plainTextView.classList.add('active');
+                    togglePlainTextBtn.innerHTML = '<i class="bi bi-grid"></i> Widget View';
+                } else {
+                    questionsScrollArea.classList.remove('hidden-view');
+                    plainTextView.classList.remove('active');
+                    togglePlainTextBtn.innerHTML = '<i class="bi bi-file-text"></i> Plain Text';
+                }
+            }
+
+            togglePlainTextBtn.addEventListener('click', function () {
+                setPlainTextView(!isPlainTextView);
+            });
+
+            copyAllBtn.addEventListener('click', function () {
+                copyToClipboard(lastRawGeneratedText, copyAllBtn);
+            });
+
+            copyStoryBtn.addEventListener('click', function () {
+                const storyContent = document.getElementById('storyContent');
+                copyToClipboard(storyContent.innerText.trim(), copyStoryBtn);
+            });
 
             function showLoading() {
                 loadingIcon.style.display = 'inline-block';
@@ -568,6 +1129,362 @@
                 errorIcon.style.display = 'block';
                 loadingText.innerText = message || "An error occurred while generating questions.";
             }
+
+            function renderGeneratedQuestions(rawText) {
+
+            // Simpan teks mentah & aktifkan tombol salin / teks polos
+            lastRawGeneratedText = rawText || '';
+            plainTextArea.value = lastRawGeneratedText;
+            copyAllBtn.disabled = !lastRawGeneratedText;
+            togglePlainTextBtn.disabled = !lastRawGeneratedText;
+
+            const contentElement = document.getElementById('content');
+            const storyContent = document.getElementById('storyContent');
+            const questionCountLabel = document.getElementById('questionCountLabel');
+
+            if (!rawText || !rawText.trim()) {
+
+                contentElement.innerHTML = `
+                    <div class="empty-question-state">
+                        <i class="bi bi-exclamation-circle"></i>
+                        <p>The problem was created, but there's no data.</p>
+                    </div>
+                `;
+
+                return;
+            }
+
+            /*
+            * ==========================================
+            * 1. Ambil bagian Paragraph / cerita
+            * ==========================================
+            */
+
+            let story = "";
+
+            const paragraphMatch = rawText.match(
+                /\*\*Paragra(?:f|ph):\*\*\s*([\s\S]*?)(?=\*\*Soal|\*\*Pertanyaan|$)/i
+            );
+
+            if (paragraphMatch) {
+                story = paragraphMatch[1].trim();
+            }
+
+            if (!story) {
+                const paragraphMatch2 = rawText.match(
+                    /Paragra(?:f|ph):\s*([\s\S]*?)(?=Soal Pilihan Ganda:|Soal Isian:|$)/i
+                );
+
+                if (paragraphMatch2) {
+                    story = paragraphMatch2[1].trim();
+                }
+            }
+
+            if (story) {
+                storyContent.innerText = story;
+            } else {
+                storyContent.innerHTML = `
+                    <p class="text-muted mb-0">
+                        Teks cerita tidak ditemukan pada hasil generate.
+                    </p>
+                `;
+            }
+
+
+            /*
+            * ==========================================
+            * 2. Pisahkan soal
+            * ==========================================
+            */
+
+            const questionRegex = /(?:^|\n)\s*(\d+)\.\s+([\s\S]*?)(?=\n\s*\d+\.\s+|$)/g;
+
+            const questions = [];
+
+            let match;
+
+            while ((match = questionRegex.exec(rawText)) !== null) {
+
+                const questionNumber = match[1];
+
+                let questionBlock = match[2].trim();
+
+                questions.push({
+                    number: questionNumber,
+                    text: questionBlock
+                });
+            }
+
+
+            /*
+            * ==========================================
+            * 3. Kalau tidak berhasil parsing
+            * ==========================================
+            */
+
+            if (questions.length === 0) {
+
+                contentElement.innerHTML = `
+                    <div class="question-widget">
+
+                        <div class="question-widget-header">
+                            <span class="question-number">
+                                Hasil Generate
+                            </span>
+                        </div>
+
+                        <div class="question-text" style="white-space: pre-wrap;">
+                            ${escapeHtml(rawText)}
+                        </div>
+
+                    </div>
+                `;
+
+                questionCountLabel.innerText = "Hasil generate";
+
+                return;
+            }
+
+
+            /*
+            * ==========================================
+            * 4. Render setiap soal
+            * ==========================================
+            */
+
+            contentElement.innerHTML = "";
+
+            questions.forEach((question) => {
+
+                const block = question.text;
+
+                /*
+                * Ambil aspek
+                */
+                let aspect = "";
+
+                const aspectMatch = block.match(
+                    /Aspek:\s*(.*?)(?=\n|$)/i
+                );
+
+                if (aspectMatch) {
+                    aspect = aspectMatch[1].trim();
+                }
+
+
+                /*
+                * Ambil bobot soal
+                */
+                let weight = "";
+
+                const weightMatch = block.match(
+                    /Bobot:\s*(\d+)/i
+                );
+
+                if (weightMatch) {
+                    weight = weightMatch[1].trim();
+                }
+
+
+                /*
+                * Ambil jawaban
+                */
+                let answer = "";
+
+                const answerMatch = block.match(
+                    /Jawaban:\s*([A-D])/i
+                );
+
+                if (answerMatch) {
+                    answer = answerMatch[1].toUpperCase();
+                }
+
+
+                /*
+                * Bersihkan bagian pertanyaan
+                */
+                let questionText = block
+                    .replace(/Aspek:\s*.*?(?=\n|$)/i, "")
+                    .replace(/Bobot:\s*\d+.*?(?=\n|$)/i, "")
+                    .replace(/Jawaban:\s*[A-D].*?(?=\n|$)/i, "")
+                    .trim();
+
+
+                /*
+                * Ambil pilihan A-D
+                */
+                const optionRegex =
+                    /(?:^|\n)\s*([A-D])\.\s*(.*?)(?=\n\s*[A-D]\.\s*|\n\s*Jawaban:|$)/g;
+
+                const options = [];
+
+                let optionMatch;
+
+                while ((optionMatch = optionRegex.exec(questionText)) !== null) {
+
+                    options.push({
+                        letter: optionMatch[1],
+                        text: optionMatch[2].trim()
+                    });
+                }
+
+
+                /*
+                * Hapus opsi dari question text
+                */
+                questionText = questionText
+                    .replace(
+                        /(?:^|\n)\s*[A-D]\.\s*[\s\S]*?(?=\n\s*Jawaban:|$)/i,
+                        ""
+                    )
+                    .trim();
+
+
+                /*
+                * Buat card
+                */
+
+                const card = document.createElement("div");
+
+                card.className = "question-widget";
+
+                let optionsHtml = "";
+
+                if (options.length > 0) {
+
+                    optionsHtml = `
+                        <div class="answer-options">
+                            ${options.map(option => {
+
+                                const isCorrect =
+                                    answer === option.letter;
+
+                                return `
+                                    <div class="answer-option ${isCorrect ? 'correct' : ''}">
+
+                                        <span class="option-letter">
+                                            ${option.letter}
+                                        </span>
+
+                                        <span>
+                                            ${escapeHtml(option.text)}
+                                        </span>
+
+                                    </div>
+                                `;
+
+                            }).join("")}
+                        </div>
+                    `;
+
+                } else {
+
+                    /*
+                    * Essay
+                    */
+
+                    const referenceMatch = block.match(
+                        /Jawaban:\s*([\s\S]*?)(?=\n\s*Bobot:|$)/i
+                    );
+
+                    let referenceAnswer = "";
+
+                    if (referenceMatch) {
+                        referenceAnswer = referenceMatch[1].trim();
+                    }
+
+                    optionsHtml = referenceAnswer
+                        ? `
+                            <div class="reference-answer">
+                                <strong>Jawaban Referensi:</strong>
+                                <div class="mt-1">
+                                    ${escapeHtml(referenceAnswer)}
+                                </div>
+                            </div>
+                        `
+                        : "";
+                }
+
+
+                card.innerHTML = `
+
+                    <div class="question-widget-header">
+
+                        <span class="question-number">
+                            Soal ${question.number}
+                        </span>
+
+                        <div class="question-header-tags">
+                            ${
+                                weight
+                                ? `<span class="question-weight">
+                                    <i class="bi bi-award"></i> Bobot ${escapeHtml(weight)}
+                                </span>`
+                                : ""
+                            }
+
+                            ${
+                                aspect
+                                ? `<span class="question-aspect">
+                                    ${escapeHtml(aspect)}
+                                </span>`
+                                : ""
+                            }
+                        </div>
+
+                    </div>
+
+                    <div class="question-text">
+                        ${escapeHtml(questionText)}
+                    </div>
+
+                    ${optionsHtml}
+
+                    ${
+                        answer && options.length > 0
+                        ? `
+                            <div class="correct-answer">
+                                <i class="bi bi-check-circle-fill"></i>
+                                Jawaban benar: <strong>${answer}</strong>
+                            </div>
+                        `
+                        : ""
+                    }
+
+                `;
+
+                contentElement.appendChild(card);
+            });
+
+
+            /*
+            * ==========================================
+            * 5. Update jumlah soal
+            * ==========================================
+            */
+
+            questionCountLabel.innerText =
+                `${questions.length} question was successfully made`;
+        }
+
+
+        /*
+        * ==========================================
+        * Escape HTML
+        * ==========================================
+        */
+
+        function escapeHtml(text) {
+
+            if (!text) return "";
+
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
 
             aiForm.addEventListener('submit', async function (event) {
                 event.preventDefault();
@@ -593,17 +1510,27 @@
                     let data = await response.json();
 
                     if (response.ok) {
-                        let formattedText = data.generated_questions;
-                        if (formattedText) {
-                            formattedText = formattedText.replace(/Soal Pilihan Ganda:/g, '**Soal Pilihan Ganda:**');
-                            formattedText = formattedText.replace(/Soal Isian:/g, '**Soal Isian:**');
-                        }
-                        contentElement.innerText = formattedText || "Soal berhasil dibuat, tapi tidak ada data.";
+
+                        const generatedText = data.generated_questions;
+
+                        renderGeneratedQuestions(generatedText);
+
                         showSuccess();
+
                         setTimeout(() => loadingModal.hide(), 2000);
+
                     } else {
-                        contentElement.innerText = "Error: " + (data.message || "Terjadi kesalahan.");
+
+                        contentElement.innerHTML = `
+                            <div class="question-widget">
+                                <div class="question-text text-danger">
+                                    Error: ${escapeHtml(data.message || "Terjadi kesalahan.")}
+                                </div>
+                            </div>
+                        `;
+
                         showError(data.message);
+
                         setTimeout(() => loadingModal.hide(), 2500);
                     }
                 } catch (error) {
@@ -614,8 +1541,36 @@
                 }
             });
 
+            // resetButton.addEventListener('click', function () {
+            //     contentElement.innerText = 'Hasil generate soal akan muncul di sini...';
+            // });
+
             resetButton.addEventListener('click', function () {
-                contentElement.innerText = 'Hasil generate soal akan muncul di sini...';
+
+                document.getElementById('storyContent').innerHTML = `
+                    <p class="text-muted mb-0">
+                        Teks cerita akan ditampilkan di sini setelah soal berhasil dibuat.
+                    </p>
+                `;
+
+                document.getElementById('questionCountLabel').innerText =
+                    "Belum ada soal";
+
+                contentElement.innerHTML = `
+                    <div class="empty-question-state">
+                        <i class="bi bi-robot"></i>
+                        <p>
+                            Hasil generate soal akan muncul di sini...
+                        </p>
+                    </div>
+                `;
+
+                // Reset teks polos & tombol salin
+                lastRawGeneratedText = '';
+                plainTextArea.value = '';
+                copyAllBtn.disabled = true;
+                togglePlainTextBtn.disabled = true;
+                setPlainTextView(false);
             });
         });
     </script>
