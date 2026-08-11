@@ -1559,7 +1559,7 @@
             resetButton.addEventListener('click', function () {
 
                 document.getElementById('storyContent').innerHTML = `
-                    <p class="text-muted mb-0">
+                    <p class="text-muted mb-0 text-center">
                         The story text will be displayed here after the questions are generated.
                     </p>
                 `;
