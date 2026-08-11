@@ -509,7 +509,7 @@
                         <p>Generate result is empty.</p>
                     </div>
                 `;
-                countLabel.innerText = "Tidak ada soal";
+                countLabel.innerText = "Generate result is empty";
                 contentEl.dataset.rendered = '1';
                 return;
             }
