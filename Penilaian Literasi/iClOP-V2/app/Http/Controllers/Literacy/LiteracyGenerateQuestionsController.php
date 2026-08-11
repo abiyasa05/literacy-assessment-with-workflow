@@ -155,7 +155,7 @@ class LiteracyGenerateQuestionsController extends Controller
 
             // ===== KIRIM FILE PATH KE N8N =====
             $response = Http::timeout(1200)->asJson()->post(
-                'http://localhost:5678/webhook/ai-gateway-rag',
+                'http://localhost:5678/webhook/literacy-rag-v3-lokal',
                 [
                     'action' => 'generate',
                     'file_path' => $fullPath,
