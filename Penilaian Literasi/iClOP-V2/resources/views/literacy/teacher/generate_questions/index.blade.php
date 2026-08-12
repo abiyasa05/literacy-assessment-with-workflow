@@ -1185,7 +1185,7 @@
             } else {
                 storyContent.innerHTML = `
                     <p class="text-muted mb-0">
-                        Teks cerita tidak ditemukan pada hasil generate.
+                        Story text not found in the generated result.
                     </p>
                 `;
             }
