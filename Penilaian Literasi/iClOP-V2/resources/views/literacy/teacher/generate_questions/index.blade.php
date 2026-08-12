@@ -1305,8 +1305,11 @@
                 */
                 let questionText = block
                     .replace(/Aspek:\s*.*?(?=\n|$)/i, "")
+                    // Jawaban pilihan ganda (satu huruf A-D)
+                    .replace(/Jawaban:\s*[A-D]\b.*?(?=\n|$)/i, "")
+                    // Jawaban esai (teks bebas) - hapus sampai baris "Bobot:" atau akhir blok
+                    .replace(/Jawaban:\s*[\s\S]*?(?=\n\s*Bobot:|$)/i, "")
                     .replace(/Bobot:\s*\d+.*?(?=\n|$)/i, "")
-                    .replace(/Jawaban:\s*[A-D].*?(?=\n|$)/i, "")
                     .trim();
 
 
