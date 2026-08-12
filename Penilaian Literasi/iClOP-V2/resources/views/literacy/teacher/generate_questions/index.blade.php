@@ -1694,7 +1694,7 @@
                     <input type="text" name="options[${optionsCount}][text]" class="form-control option-text" style="width: 40%;" placeholder="Option ${optionsCount + 1}" required>
                     <input type="number" name="options[${optionsCount}][score]" class="form-control option-score" style="width: 20%;" placeholder="Score" min="0" max="100" required>
                     <label class="d-flex align-items-center ms-2">
-                        <input type="checkbox" name="options[${optionsCount}][is_correct]" value="1" class="correct-answer me-1">
+                        <input type="checkbox" name="options[${optionsCount}][is_correct]" value="1" class="correct-answer me-1" style="margin: 0; width: 16px; height: 16px;">
                         <span>Correct</span>
                     </label>
                     <button type="button" class="btn btn-danger btn-sm ms-2 remove-option">X</button>
