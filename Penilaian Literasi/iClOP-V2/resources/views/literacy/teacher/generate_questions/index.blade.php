@@ -894,7 +894,7 @@
 
                                         <!-- Plain Text View -->
                                         <div id="plainTextView" class="plain-text-view">
-                                            <textarea id="plainTextArea" readonly placeholder="Teks polos hasil generate akan muncul di sini..."></textarea>
+                                            <textarea id="plainTextArea" readonly placeholder="The plain generated text will appear here.."></textarea>
                                         </div>
 
                                     </div>
@@ -1184,9 +1184,11 @@
                 storyContent.innerText = story;
             } else {
                 storyContent.innerHTML = `
-                    <p class="text-muted mb-0">
-                        Story text not found in the generated result.
-                    </p>
+                    <div class="d-flex align-items-center justify-content-center text-center" style="min-height: 120px;">
+                        <p class="text-muted mb-0">
+                            Story text not found in the generated result.
+                        </p>
+                    </div>
                 `;
             }
 
@@ -1229,7 +1231,7 @@
 
                         <div class="question-widget-header">
                             <span class="question-number">
-                                Hasil Generate
+                                Generated Result
                             </span>
                         </div>
 
@@ -1240,7 +1242,7 @@
                     </div>
                 `;
 
-                questionCountLabel.innerText = "Hasil generate";
+                questionCountLabel.innerText = "Generated Result";
 
                 return;
             }
