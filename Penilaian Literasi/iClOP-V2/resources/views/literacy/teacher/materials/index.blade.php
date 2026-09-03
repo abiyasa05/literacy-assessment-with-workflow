@@ -478,6 +478,47 @@
     });
     </script>
     <script>
+        function addCreateStoryText() {
+            const container = document.getElementById('createStoryTextContainer');
+
+            const div = document.createElement('div');
+
+            div.className = 'd-flex mb-2 align-items-start';
+
+            div.innerHTML = `
+                <textarea
+                    name="story_texts[]"
+                    class="form-control me-2"
+                    rows="3"
+                    placeholder="Enter reading text"></textarea>
+
+                <button
+                    type="button"
+                    class="btn btn-danger btn-sm remove-story-text">
+                    Delete
+                </button>
+            `;
+
+            container.appendChild(div);
+        }
+
+
+        // Event hapus Reading Text
+        document.addEventListener('click', function (event) {
+
+            if (event.target.classList.contains('remove-story-text')) {
+
+                const item = event.target.closest('.d-flex');
+
+                if (item) {
+                    item.remove();
+                }
+
+            }
+
+        });
+        </script>
+    <script>
         document.getElementById('toggleSidebar').addEventListener('click', function () {
             var sidebar = document.getElementById('sidebarMenu');
             sidebar.classList.toggle('active');

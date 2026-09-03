@@ -8,13 +8,17 @@ use App\Models\Literacy\LiteracyQuestion;
 use App\Models\Literacy\LiteracyStoryText;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class LiteracyMaterialController extends Controller
 {
     public function materials()
     {
-        $materials = LiteracyMaterial::orderBy('created_at', 'desc')->get();
+        $materials = LiteracyMaterial::with('storyTexts')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         $users = User::all();
         $questions = LiteracyQuestion::all();
 
@@ -40,17 +44,26 @@ class LiteracyMaterialController extends Controller
     {
         $request->validate([
             'title' => 'required|string',
-            'story_text' => 'nullable|string',
             'description' => 'nullable|string',
-            'file_path' => 'nullable|file|mimes:pdf,doc,docx|max:1048576'
+
+            'file' => 'nullable|file|mimes:pdf,doc,docx,txt|max:1048576',
+
+            'story_texts' => 'nullable|array',
+            'story_texts.*' => 'nullable|string',
         ]);
 
         $filePath = null;
 
         if ($request->hasFile('file')) {
+
             $originalName = $request->file('file')->getClientOriginalName();
-            $path = $request->file('file')->storeAs('public/literacy_materials', $originalName);
-            $filePath = str_replace('public/', '', $path); // Simpan path relatif
+
+            $path = $request->file('file')->storeAs(
+                'public/literacy_materials',
+                $originalName
+            );
+
+            $filePath = str_replace('public/', '', $path);
         }
 
         // Buat materi utama
@@ -61,12 +74,22 @@ class LiteracyMaterialController extends Controller
             'user_id' => auth()->id()
         ]);
 
-        // Simpan story_text jika ada
-        if (!empty(trim($request->story_text))) {
-            LiteracyStoryText::create([
-                'material_id' => $material->id,
-                'story_text' => $request->story_text
-            ]);
+
+        // Simpan semua Reading Text
+        $storyTexts = $request->input('story_texts', []);
+
+        foreach ($storyTexts as $storyText) {
+
+            $cleaned = trim($storyText);
+
+            if (!empty($cleaned)) {
+
+                LiteracyStoryText::create([
+                    'material_id' => $material->id,
+                    'story_text' => $cleaned
+                ]);
+
+            }
         }
 
         return redirect()->route('literacy_teacher_materials');
@@ -83,25 +106,47 @@ class LiteracyMaterialController extends Controller
         $request->validate([
             'title' => 'required|string',
             'description' => 'nullable|string',
-            'file_path' => 'nullable|file|mimes:pdf,doc,docx,txt|max:1048576',
-            'story_texts' => 'array',
+            'file' => 'nullable|file|mimes:pdf,doc,docx,txt|max:1048576',
+
+            'story_texts' => 'nullable|array',
             'story_texts.*' => 'nullable|string',
-            'story_text_ids' => 'array',
+
+            'story_text_ids' => 'nullable|array',
             'story_text_ids.*' => 'nullable|integer',
         ]);
 
         $material = LiteracyMaterial::findOrFail($id);
+
         $filePath = $material->file_path;
 
+        /*
+        |--------------------------------------------------------------------------
+        | Update File
+        |--------------------------------------------------------------------------
+        */
+
         if ($request->hasFile('file')) {
+
             if ($filePath && Storage::exists('public/' . $filePath)) {
                 Storage::delete('public/' . $filePath);
             }
 
             $originalName = $request->file('file')->getClientOriginalName();
-            $path = $request->file('file')->storeAs('public/literacy_materials', $originalName);
+
+            $path = $request->file('file')->storeAs(
+                'public/literacy_materials',
+                $originalName
+            );
+
             $filePath = str_replace('public/', '', $path);
         }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Update Material
+        |--------------------------------------------------------------------------
+        */
 
         $material->update([
             'title' => $request->title,
@@ -109,34 +154,55 @@ class LiteracyMaterialController extends Controller
             'file_path' => $filePath,
         ]);
 
-        // Update, Tambah, dan Hapus Story Texts
-        $existingIds = $material->storyTexts->pluck('id')->toArray(); // semua ID lama
-        $sentIds = $request->input('story_text_ids', []);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Update / Create Story Text
+        |--------------------------------------------------------------------------
+        */
+
         $texts = $request->input('story_texts', []);
+        $ids = $request->input('story_text_ids', []);
 
-        foreach ($texts as $index => $text) {
-            $id = $sentIds[$index] ?? null;
-            $cleaned = trim($text);
+        DB::transaction(function () use ($material, $texts, $ids) {
+            $existingStories = $material->storyTexts()->get()->keyBy('id');
+            $submittedIds = [];
 
-            if ($id && in_array($id, $existingIds)) {
-                // Update
-                LiteracyStoryText::where('id', $id)->update([
-                    'story_text' => $cleaned
-                ]);
-            } elseif (!$id && !empty($cleaned)) {
-                // Tambah baru
-                LiteracyStoryText::create([
-                    'material_id' => $material->id,
-                    'story_text' => $cleaned
-                ]);
+            foreach ($texts as $index => $text) {
+                $storyId = $ids[$index] ?? null;
+                $storyText = trim((string) $text);
+
+                if ($storyId && $existingStories->has($storyId)) {
+                    if ($storyText !== '') {
+                        $existingStories->get($storyId)->update([
+                            'story_text' => $storyText,
+                        ]);
+                        $submittedIds[] = (int) $storyId;
+                    }
+
+                    continue;
+                }
+
+                if (!$storyId && $storyText !== '') {
+                    $newStory = $material->storyTexts()->create([
+                        'story_text' => $storyText,
+                    ]);
+                    $submittedIds[] = $newStory->id;
+                }
             }
-        }
 
-        // Hapus yang tidak dikirim lagi
-        $deletedIds = array_diff($existingIds, array_filter($sentIds));
-        LiteracyStoryText::destroy($deletedIds);
+            $idsToDelete = $existingStories->keys()
+                ->diff($submittedIds)
+                ->all();
 
-        return redirect()->route('literacy_teacher_materials');
+            if ($idsToDelete) {
+                $material->storyTexts()->whereIn('id', $idsToDelete)->delete();
+            }
+        });
+
+
+        return redirect()
+            ->route('literacy_teacher_materials');
     }
 
     public function destroy($id)

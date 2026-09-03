@@ -1032,8 +1032,9 @@
             * Salin ke clipboard (dengan fallback)
             * ==========================================
             */
-            function copyToClipboard(text, buttonEl) {
-                if (!text) return;
+            async function copyToClipboard(text, buttonEl) {
+                text = String(text || '').trim();
+                if (!text) return false;
 
                 const finishFeedback = () => {
                     if (!buttonEl) return;
@@ -1046,30 +1047,43 @@
                     }, 1800);
                 };
 
-                if (navigator.clipboard && window.isSecureContext) {
-                    navigator.clipboard.writeText(text).then(finishFeedback).catch(() => {
-                        fallbackCopy(text, finishFeedback);
-                    });
-                } else {
-                    fallbackCopy(text, finishFeedback);
+                try {
+                    if (navigator.clipboard && window.isSecureContext) {
+                        await navigator.clipboard.writeText(text);
+                    } else if (!fallbackCopy(text)) {
+                        return false;
+                    }
+                    finishFeedback();
+                    return true;
+                } catch (error) {
+                    if (!fallbackCopy(text)) {
+                        console.error('Gagal menyalin teks:', error);
+                        return false;
+                    }
+                    finishFeedback();
+                    return true;
                 }
             }
 
-            function fallbackCopy(text, onDone) {
+            function fallbackCopy(text) {
                 const tempArea = document.createElement('textarea');
                 tempArea.value = text;
                 tempArea.style.position = 'fixed';
                 tempArea.style.opacity = '0';
+                tempArea.style.pointerEvents = 'none';
                 document.body.appendChild(tempArea);
-                tempArea.focus();
+                tempArea.focus({ preventScroll: true });
                 tempArea.select();
+                tempArea.setSelectionRange(0, tempArea.value.length);
+                let copied = false;
                 try {
-                    document.execCommand('copy');
-                    if (onDone) onDone();
-                } catch (err) {
-                    console.error('Gagal menyalin teks:', err);
+                    copied = document.execCommand('copy');
+                } catch (error) {
+                    copied = false;
+                } finally {
+                    document.body.removeChild(tempArea);
                 }
-                document.body.removeChild(tempArea);
+                return copied;
             }
 
             /*
@@ -1105,7 +1119,7 @@
 
             copyStoryBtn.addEventListener('click', function () {
                 const storyContent = document.getElementById('storyContent');
-                copyToClipboard(storyContent.innerText.trim(), copyStoryBtn);
+                copyToClipboard(storyContent ? storyContent.textContent : '', copyStoryBtn);
             });
 
             function showLoading() {
