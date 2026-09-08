@@ -17,6 +17,15 @@
                 </div>
                 <!-- Text -->
                 <p id="loadingText" style="font-size: 1.25rem; font-weight: 500;">Please wait, generating questions...</p>
+                <!-- Tombol Coba Lagi & Tutup, hanya muncul saat gagal -->
+                <div id="errorActionButtons" style="display: none;">
+                    <button id="retryGenerateBtn" type="button" class="btn btn-outline-danger mt-2 me-2">
+                        <i class="bi bi-arrow-clockwise"></i> Try Again
+                    </button>
+                    <button id="closeErrorModalBtn" type="button" class="btn btn-outline-secondary mt-2">
+                        Close
+                    </button>
+                </div>
             </div>
         </div>
     </div>

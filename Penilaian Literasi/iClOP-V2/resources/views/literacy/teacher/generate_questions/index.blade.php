@@ -1026,6 +1026,9 @@
             const successIcon = document.getElementById('successIcon');
             const errorIcon = document.getElementById('errorIcon');
             const loadingText = document.getElementById('loadingText');
+            const retryGenerateBtn = document.getElementById('retryGenerateBtn');
+            const closeErrorModalBtn = document.getElementById('closeErrorModalBtn');
+            const errorActionButtons = document.getElementById('errorActionButtons');
 
             /*
             * ==========================================
@@ -1126,6 +1129,7 @@
                 loadingIcon.style.display = 'inline-block';
                 successIcon.style.display = 'none';
                 errorIcon.style.display = 'none';
+                errorActionButtons.style.display = 'none';
                 loadingText.innerText = "Please wait, generating questions...";
                 loadingModal.show();
             }
@@ -1134,6 +1138,7 @@
                 loadingIcon.style.display = 'none';
                 successIcon.style.display = 'block';
                 errorIcon.style.display = 'none';
+                errorActionButtons.style.display = 'none';
                 loadingText.innerText = "Questions generated successfully!";
             }
 
@@ -1141,8 +1146,19 @@
                 loadingIcon.style.display = 'none';
                 successIcon.style.display = 'none';
                 errorIcon.style.display = 'block';
+                errorActionButtons.style.display = 'block';
                 loadingText.innerText = message || "An error occurred while generating questions.";
             }
+
+            // Tombol Coba Lagi: submit ulang form generate soal
+            retryGenerateBtn.addEventListener('click', function () {
+                aiForm.requestSubmit();
+            });
+
+            // Tombol Tutup: tutup modal manual (modal tidak auto-hide saat gagal)
+            closeErrorModalBtn.addEventListener('click', function () {
+                loadingModal.hide();
+            });
 
             function renderGeneratedQuestions(rawText) {
 
@@ -1537,7 +1553,12 @@
                         body: JSON.stringify(payload)
                     });
 
-                    let data = await response.json();
+                    let data;
+                    try {
+                        data = await response.json();
+                    } catch (parseError) {
+                        data = { message: "Server memberikan respons yang tidak valid." };
+                    }
 
                     if (response.ok) {
 
@@ -1559,15 +1580,14 @@
                             </div>
                         `;
 
+                        // Modal tidak auto-hide saat gagal, biarkan guru pilih
+                        // "Coba Lagi" atau menutup modal secara manual.
                         showError(data.message);
-
-                        setTimeout(() => loadingModal.hide(), 2500);
                     }
                 } catch (error) {
                     contentElement.innerText = "Gagal menghubungi server!";
                     console.error("Error:", error);
                     showError("Gagal menghubungi server!");
-                    setTimeout(() => loadingModal.hide(), 2500);
                 }
             });
 
