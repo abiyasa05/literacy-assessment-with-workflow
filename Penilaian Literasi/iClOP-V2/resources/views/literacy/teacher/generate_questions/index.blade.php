@@ -1564,14 +1564,18 @@
                         ? data.generated_questions.trim()
                         : '';
 
-                    if (response.ok && generatedText) {
+                    const responseHasError = data.status === 'error' || data.success === false;
+
+                    if (response.ok && !responseHasError && generatedText) {
                         renderGeneratedQuestions(generatedText);
                         showSuccess();
                         setTimeout(() => loadingModal.hide(), 2000);
                     } else {
                         const errorMessage = data.message || (
                             response.ok
-                                ? "The server did not return any generated questions."
+                                ? responseHasError
+                                    ? "The server reported that question generation failed."
+                                    : "The server did not return any generated questions."
                                 : "An error occurred while generating questions."
                         );
 
