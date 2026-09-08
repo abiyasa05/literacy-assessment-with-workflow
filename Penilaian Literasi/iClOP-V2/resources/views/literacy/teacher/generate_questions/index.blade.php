@@ -1560,29 +1560,32 @@
                         data = { message: "Server memberikan respons yang tidak valid." };
                     }
 
-                    if (response.ok) {
+                    const generatedText = typeof data.generated_questions === 'string'
+                        ? data.generated_questions.trim()
+                        : '';
 
-                        const generatedText = data.generated_questions;
-
+                    if (response.ok && generatedText) {
                         renderGeneratedQuestions(generatedText);
-
                         showSuccess();
-
                         setTimeout(() => loadingModal.hide(), 2000);
-
                     } else {
+                        const errorMessage = data.message || (
+                            response.ok
+                                ? "The server did not return any generated questions."
+                                : "An error occurred while generating questions."
+                        );
 
                         contentElement.innerHTML = `
                             <div class="question-widget">
                                 <div class="question-text text-danger">
-                                    Error: ${escapeHtml(data.message || "Terjadi kesalahan.")}
+                                    Error: ${escapeHtml(errorMessage)}
                                 </div>
                             </div>
                         `;
 
                         // Modal tidak auto-hide saat gagal, biarkan guru pilih
                         // "Coba Lagi" atau menutup modal secara manual.
-                        showError(data.message);
+                        showError(errorMessage);
                     }
                 } catch (error) {
                     contentElement.innerText = "Gagal menghubungi server!";
