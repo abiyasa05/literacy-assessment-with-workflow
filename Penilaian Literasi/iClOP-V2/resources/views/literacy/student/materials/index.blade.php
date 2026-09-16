@@ -165,6 +165,196 @@
             box-shadow: 1px 0px 8px rgba(0, 0, 0, 0.1);
             /* Add shadow to the right side */
         }
+
+        .material-panel {
+            border: 1px solid #dfe7f2;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .material-page-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+        }
+
+        .material-search {
+            width: 288px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border: 1px solid #d7e0ec;
+            border-radius: 7px;
+            color: #617089;
+        }
+
+        .material-search input {
+            width: 100%;
+            border: 0;
+            outline: 0;
+            color: #182642;
+        }
+
+        .material-header {
+            min-height: 56px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 10px 18px;
+            cursor: pointer;
+            background: linear-gradient(90deg, #f1f6ff 0%, #fbfdff 100%);
+        }
+
+        .material-number {
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 28px;
+            border-radius: 50%;
+            background: #e4edff;
+            color: #175ed1;
+            font-weight: 600;
+        }
+
+        .material-title {
+            flex: 1;
+            color: #182642;
+            font-weight: 600;
+        }
+
+        .material-file-icon,
+        .material-chevron {
+            color: #182642;
+        }
+
+        .material-chevron {
+            transition: transform .2s ease;
+        }
+
+        .material-header[aria-expanded="true"] .material-chevron {
+            transform: rotate(180deg);
+        }
+
+        .material-view-button {
+            min-width: 104px;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+
+        .assessment-panel {
+            margin: 12px 14px 16px;
+            border: 1px solid #e5ebf3;
+            border-radius: 7px;
+            overflow: hidden;
+        }
+
+        .assessment-panel h5 {
+            margin: 0;
+            padding: 13px 16px;
+            color: #182642;
+            background: #f0f5fd;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .assessment-table thead th {
+            padding: 10px 16px;
+            border-top: 0;
+            color: #182642;
+            font-size: 12px;
+            font-weight: 600;
+            background: #fbfcfe;
+        }
+
+        .assessment-table tbody td {
+            padding: 10px 16px;
+            color: #263653;
+            vertical-align: middle;
+            border-color: #e5ebf3;
+            font-size: 13px;
+        }
+
+        .assessment-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .status-pending {
+            color: #45556d;
+            background: #edf1f7;
+        }
+
+        .status-progress {
+            color: #bd6500;
+            background: #fff0d5;
+        }
+
+        .status-completed {
+            color: #16814b;
+            background: #dff7e8;
+        }
+
+        .assessment-action {
+            min-width: 108px;
+            color: #fff;
+            border: 0;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+
+        .action-start {
+            background: #2ab673;
+        }
+
+        .action-continue {
+            background: #f3a000;
+        }
+
+        .action-result {
+            background: #2479ed;
+        }
+
+        @media (max-width: 576px) {
+            .material-page-heading {
+                display: block;
+            }
+
+            .material-search {
+                width: 100%;
+                margin-top: 14px;
+            }
+
+            .material-header {
+                gap: 9px;
+                padding: 10px;
+            }
+
+            .material-file-icon {
+                display: none;
+            }
+
+            .material-view-button {
+                min-width: auto;
+                padding: 5px 7px;
+                font-size: 11px;
+            }
+
+            .assessment-panel {
+                margin: 10px 8px 12px;
+            }
+
+            .assessment-table {
+                min-width: 620px;
+            }
+        }
     </style>
 
     <title>Tab Example</title>
@@ -290,7 +480,7 @@
                             </div>
                         </li>
 
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <div class="row align-items-start">
                                 <div class="col-2">
                                     <i class="fas fa-chart-bar"
@@ -301,7 +491,7 @@
                                         style="color: #34364A;">Assessments</a>
                                 </div>
                             </div>
-                        </li>
+                        </li> --}}
 
                         <li class="nav-item">
                             <div class="row align-items-start">
@@ -326,49 +516,109 @@
             <!-- CONTENT -->
             <main class="col-md-9">
                 <div class="content">
-                    <p style="font-size: 24px; font-weight: 500; color: #34364A;">Materials</p>
-                    <div class="container mt-4">
-                        <div class="table-responsive mb-5">
-                            <table id="progressTable" class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Title</th>
-                                        <th>File</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse ($materials_student as $index => $material_student)
-                                        <tr>
-                                            <td>{{ $index + 1 }}</td>
-                                            <td>{{ $material_student->title }}</td>
-                                            <td>
-                                                @if ($material_student->file_path)
-                                                    <a href="{{ route('literacy_materials_view', $material_student->id) }}" 
-                                                        class="btn btn-sm btn-primary" target="_blank">
-                                                        View Material
-                                                    </a>
-                                                @else
-                                                    No material available
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-sm btn-warning text-white" data-toggle="modal"
-                                                    data-target="#detailMaterialModal{{ $material_student->id }}">Detail</button>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="5" class="text-center">No data available</td>
-                                        </tr>
-                                    @endforelse
-                                    @foreach ($materials_student as $material)
-                                        @include('literacy.student.materials.modals.show', ['material' => $material])
-                                    @endforeach
-                                </tbody>
-                            </table>
+                    <div class="material-page-heading">
+                        <div>
+                            <p style="font-size: 24px; font-weight: 500; color: #34364A; margin-bottom: 2px;">Materials List</p>
+                            <p class="text-muted mb-0">Select a material to see the list of assessments</p>
                         </div>
+                        <div class="material-search">
+                            <i class="fas fa-search"></i>
+                            <input type="search" id="materialSearch" placeholder="Search materials..." aria-label="Search materials">
+                        </div>
+                    </div>
+                    <div class="container mt-4" id="materialAssessmentList">
+                        @forelse ($materials_student as $index => $material_student)
+                            <section class="material-panel mb-3">
+                                <div class="material-header" data-toggle="collapse"
+                                    data-target="#materialAssessments{{ $material_student->id }}"
+                                    aria-expanded="{{ $index === 0 ? 'true' : 'false' }}">
+                                    <div class="material-number">{{ $index + 1 }}</div>
+                                    <div class="material-title">{{ $material_student->title }}</div>
+                                    <i class="far fa-file-alt material-file-icon"></i>
+                                    @if ($material_student->file_path)
+                                        <a href="{{ route('literacy_materials_view', $material_student->id) }}"
+                                            class="btn btn-sm btn-outline-primary material-view-button" target="_blank"
+                                            onclick="event.stopPropagation();">
+                                            See Material
+                                        </a>
+                                    @endif
+                                    <i class="fas fa-chevron-down material-chevron"></i>
+                                </div>
+
+                                <div id="materialAssessments{{ $material_student->id }}"
+                                    class="collapse {{ $index === 0 ? 'show' : '' }}">
+                                    <div class="assessment-panel">
+                                        <h5>List of Assessments</h5>
+                                        <div class="table-responsive">
+                                            <table class="table assessment-table mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Nu</th>
+                                                        <th>Assessment Title</th>
+                                                        <th>Status</th>
+                                                        <th>Score</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @forelse ($material_student->assessments as $assessmentIndex => $assessment)
+                                                        <tr>
+                                                            <td>{{ $assessmentIndex + 1 }}</td>
+                                                            <td>Assessment {{ $assessmentIndex + 1 }}</td>
+                                                            <td>
+                                                                @if ($assessment->status === 'completed')
+                                                                    <span class="assessment-status status-completed">Completed</span>
+                                                                @elseif ($assessment->status === 'in_progress')
+                                                                    <span class="assessment-status status-progress">In Progress</span>
+                                                                @else
+                                                                    <span class="assessment-status status-pending">Pending</span>
+                                                                @endif
+                                                            </td>
+                                                            <td>
+                                                                @if ($assessment->score !== null)
+                                                                    {{ rtrim(rtrim(number_format((float) $assessment->score, 2, '.', ''), '0'), '.') }}
+                                                                @else
+                                                                    Not rated yet
+                                                                @endif
+                                                            </td>
+                                                            <td>
+                                                                @if ($assessment->status === 'pending')
+                                                                    <form action="{{ route('literacy_assessments_start', $assessment->id) }}"
+                                                                        method="POST" target="_blank" class="d-inline">
+                                                                        @csrf
+                                                                        <button type="submit" class="btn btn-sm assessment-action action-start">
+                                                                            <i class="fas fa-play mr-1"></i> Start
+                                                                        </button>
+                                                                    </form>
+                                                                @elseif ($assessment->status === 'in_progress')
+                                                                    <a href="{{ route('literacy_assessments_continue', $assessment->id) }}"
+                                                                        class="btn btn-sm assessment-action action-continue" target="_blank">
+                                                                        <i class="fas fa-redo mr-1"></i> Continue
+                                                                    </a>
+                                                                @else
+                                                                    <a href="{{ route('literacy_assessment_result', $assessment->id) }}"
+                                                                        class="btn btn-sm assessment-action action-result" target="_blank">
+                                                                        <i class="fas fa-chart-bar mr-1"></i> Show Result
+                                                                    </a>
+                                                                @endif
+                                                            </td>
+                                                        </tr>
+                                                    @empty
+                                                        <tr>
+                                                            <td colspan="5" class="text-center text-muted py-4">
+                                                                There's no assessment for this material yet.
+                                                            </td>
+                                                        </tr>
+                                                    @endforelse
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        @empty
+                            <div class="alert alert-light border">There's no material available.</div>
+                        @endforelse
                     </div>
                 </div>
             </main>                        
@@ -564,7 +814,7 @@
             $(document).click(function () {
                 $("#dropdownContainer").removeClass("active");
             });
-            $('#progressTable').DataTable({
+            $('#progressTable').length && $('#progressTable').DataTable({
                 // Configuration options
                 "paging": true,
                 "ordering": true,
@@ -762,6 +1012,18 @@
             transform: translateY(0);
         }
     </style>
+    <script>
+        $(function () {
+            $('#materialSearch').on('input', function () {
+                var searchTerm = $(this).val().toLowerCase();
+
+                $('.material-panel').each(function () {
+                    var materialTitle = $(this).find('.material-title').text().toLowerCase();
+                    $(this).toggle(materialTitle.indexOf(searchTerm) !== -1);
+                });
+            });
+        });
+    </script>
     <footer class="footer"
         style="background-color: #EAEAEA; color: #636363; text-align: center; padding: 10px 0; position: fixed; bottom: 0;  width: 100%; ">
         © 2026 Your Website. All rights reserved.

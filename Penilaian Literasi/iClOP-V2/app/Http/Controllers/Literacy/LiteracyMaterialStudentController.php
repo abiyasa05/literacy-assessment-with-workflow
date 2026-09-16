@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Literacy;
 use App\Http\Controllers\Controller;
 use App\Models\Literacy\LiteracyMaterial;
 use App\Models\Literacy\LiteracyQuestion;
+use App\Models\Literacy\LiteracyAssessment;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class LiteracyMaterialStudentController extends Controller
@@ -32,7 +34,13 @@ class LiteracyMaterialStudentController extends Controller
 
     function show_materials()
     {
-        $materials_student = LiteracyMaterial::orderBy('created_at', 'desc')->get();
+        $materials_student = LiteracyMaterial::with([
+            'assessments' => function ($query) {
+                $query->where('user_id', Auth::id())
+                    ->orderBy('created_at');
+            },
+        ])->orderBy('created_at', 'desc')->get();
+
         return view('literacy.student.materials.index', [
             'materials_student' => $materials_student,
         ]);

@@ -26,4 +26,9 @@ class LiteracyMaterial extends Model
     {
         return $this->hasMany(LiteracyStoryText::class, 'material_id');
     }
+
+    public function assessments()
+    {
+        return $this->hasMany(LiteracyAssessment::class, 'material_id');
+    }
 }

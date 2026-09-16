@@ -79,24 +79,32 @@ class LiteracyQuestionController extends Controller
     {
         // Ambil hanya pengguna dengan role 'student'
         $users = User::where('role', 'student')->get();
-        $questionsCount = LiteracyQuestion::count();
+        $materials = LiteracyMaterial::has('questions')->get();
 
-        if ($questionsCount === 0) {
+        if ($materials->isEmpty()) {
             return redirect()->back()->with('error', 'Belum ada soal yang tersedia untuk asesmen.');
         }
 
-        foreach ($users as $user) {
-            LiteracyAssessment::firstOrCreate(
-                ['user_id' => $user->id],
-                [
-                    'status' => 'pending',
-                    'score' => 0,
-                    'feedback' => '',
-                    'assessed_at' => null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]
-            );
+        foreach ($materials as $material) {
+            foreach ($users as $user) {
+                $hasActiveAssessment = LiteracyAssessment::where('user_id', $user->id)
+                    ->where('material_id', $material->id)
+                    ->whereIn('status', ['pending', 'in_progress'])
+                    ->exists();
+
+                if (!$hasActiveAssessment) {
+                    LiteracyAssessment::create([
+                        'user_id' => $user->id,
+                        'material_id' => $material->id,
+                        'status' => 'pending',
+                        'score' => 0,
+                        'feedback' => '',
+                        'assessed_at' => null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
         }
 
         return redirect()->back()->with('success', 'Asesmen berhasil dipublikasikan untuk semua siswa.');

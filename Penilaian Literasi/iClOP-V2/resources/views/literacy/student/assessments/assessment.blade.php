@@ -321,13 +321,13 @@
                                         style="margin-top: 12px; margin-left: 15px; color: #676767;"></i>
                                 </div>
                                 <div class="col">
-                                    <a class="nav-link active" href="" style="color: #34364A;"
+                                    <a class="nav-link active" href="{{ route('literacy_student_materials') }}" style="color: #34364A;"
                                         id="manageQuestionsLink">Materials</a>
                                 </div>
                             </div>
                         </li>
     
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <div class="row align-items-start">
                                 <div class="col-2">
                                     <i class="fas fa-chart-bar"
@@ -338,7 +338,7 @@
                                         style="color: #34364A;">Assessments</a>
                                 </div>
                             </div>
-                        </li>
+                        </li> --}}
     
                         <li class="nav-item">
                             <div class="row align-items-start">

@@ -34,6 +34,7 @@ class LiteracyAssessmentController extends Controller
     public function index()
     {
         $assessments = LiteracyAssessment::where('user_id', Auth::id())
+            ->with('material')
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -52,8 +53,10 @@ class LiteracyAssessmentController extends Controller
         // Ubah status asesmen menjadi in_progress
         $assessment->update(['status' => 'in_progress']);
 
-        // Ambil semua pertanyaan terkait asesmen ini
-        $questions = LiteracyQuestion::all(); // Sesuaikan jika ada filter
+        // Hanya siapkan soal dari materi yang menjadi scope asesmen ini.
+        $questions = LiteracyQuestion::when($assessment->material_id, function ($query) use ($assessment) {
+            $query->where('material_id', $assessment->material_id);
+        })->get();
 
         // Insert jawaban kosong jika belum ada
         foreach ($questions as $question) {
@@ -84,7 +87,10 @@ class LiteracyAssessmentController extends Controller
             ->firstOrFail();
 
         // Ambil semua pertanyaan, urutkan pilihan ganda dulu baru essay
-        $questions = LiteracyQuestion::orderByRaw("FIELD(type, 'multiple_choice', 'essay')")
+        $questions = LiteracyQuestion::when($assessment->material_id, function ($query) use ($assessment) {
+                $query->where('material_id', $assessment->material_id);
+            })
+            ->orderByRaw("FIELD(type, 'multiple_choice', 'essay')")
             ->with([
                 'answers' => function ($query) use ($id) {
                     $query->where('assessment_id', $id);
@@ -133,7 +139,9 @@ class LiteracyAssessmentController extends Controller
         $questionId = $request->question_id;
         $answerValue = $request->answer;
 
-        $question = LiteracyQuestion::find($questionId);
+        $question = LiteracyQuestion::when($assessment->material_id, function ($query) use ($assessment) {
+                $query->where('material_id', $assessment->material_id);
+            })->find($questionId);
         if (!$question) {
             return response()->json(['error' => 'Pertanyaan tidak ditemukan'], 404);
         }
@@ -173,11 +181,6 @@ class LiteracyAssessmentController extends Controller
 
         Log::info('Answered Questions:', ['answered' => $answeredQuestions, 'total' => $totalQuestions]);
 
-        // Jika semua pertanyaan sudah dijawab, update status ke `completed`
-        if ($answeredQuestions >= $totalQuestions) {
-            $assessment->update(['status' => 'completed']);
-        }
-
         return response()->json(['success' => true]);
     }
 
@@ -196,7 +199,11 @@ class LiteracyAssessmentController extends Controller
                 return response()->json(['error' => 'Asesmen tidak sedang berjalan.'], 400);
             }
 
-            $answers = LiteracyAnswer::where('assessment_id', $id)->get();
+            $answers = LiteracyAnswer::where('assessment_id', $id)
+                ->whereHas('question', function ($query) use ($assessment) {
+                    $query->where('material_id', $assessment->material_id);
+                })
+                ->get();
 
             $correctWeight = 0;
             $totalWeight = 0;
@@ -545,15 +552,20 @@ class LiteracyAssessmentController extends Controller
             /* =========================
                BUAT ASESMEN BARU
             ========================= */
-            LiteracyAssessment::create([
-                'user_id' => $user->id,
-                'status' => 'pending',
-                'score' => null,
-                'feedback' => '',
-                'assessed_at' => null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            LiteracyAssessment::firstOrCreate(
+                [
+                    'user_id' => $user->id,
+                    'material_id' => $assessment->material_id,
+                    'status' => 'pending',
+                ],
+                [
+                    'score' => null,
+                    'feedback' => '',
+                    'assessed_at' => null,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
 
 
             /* =========================
@@ -593,7 +605,8 @@ class LiteracyAssessmentController extends Controller
             ->firstOrFail();
 
         // Ambil semua pertanyaan beserta jawaban untuk asesmen ini
-        $questions = LiteracyQuestion::with([
+        $questions = LiteracyQuestion::where('material_id', $assessment->material_id)
+            ->with([
             'answers' => function ($query) use ($id) {
                 $query->where('assessment_id', $id);
             },
@@ -613,7 +626,8 @@ class LiteracyAssessmentController extends Controller
             ->where('status', 'completed')
             ->firstOrFail();
 
-        $questions = LiteracyQuestion::with([
+        $questions = LiteracyQuestion::where('material_id', $assessment->material_id)
+            ->with([
             'answers' => function ($query) use ($id) {
                 $query->where('assessment_id', $id);
             },

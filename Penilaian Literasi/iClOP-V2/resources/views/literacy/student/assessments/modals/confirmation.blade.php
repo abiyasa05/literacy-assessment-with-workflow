@@ -65,7 +65,7 @@
                 showSuccessFeedback();
                 setTimeout(function() {
                     $('#loadingModal').modal('hide');
-                    window.location.href = "/literacy/student/assessments";
+                    window.location.href = "{{ route('literacy_student_materials') }}";
                 }, 2000);
             },
             error: function(xhr) {

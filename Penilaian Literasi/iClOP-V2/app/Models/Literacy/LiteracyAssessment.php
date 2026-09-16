@@ -15,8 +15,10 @@ class LiteracyAssessment extends Model
     // Tentukan kolom yang bisa diisi secara massal
     protected $fillable = [
         'user_id',
+        'material_id',
         'status',
         'score',
+        'feedback',
         'answer_text',
         'assessed_at',
         'created_at',
@@ -29,5 +31,20 @@ class LiteracyAssessment extends Model
     public function user()
     {
         return $this->belongsTo(\App\Models\User::class, 'user_id');
+    }
+
+    public function material()
+    {
+        return $this->belongsTo(LiteracyMaterial::class, 'material_id');
+    }
+
+    public function questions()
+    {
+        return $this->belongsToMany(
+            LiteracyQuestion::class,
+            'literacy_answers',
+            'assessment_id',
+            'question_id'
+        );
     }
 }
