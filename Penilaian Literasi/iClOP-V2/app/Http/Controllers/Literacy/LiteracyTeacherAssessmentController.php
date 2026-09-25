@@ -36,7 +36,10 @@ class LiteracyTeacherAssessmentController extends Controller
         })->findOrFail($id);
 
         // Ambil pertanyaan terkait asesmen
-        $questions = $assessment->questions()->with('answers.option')->get();
+        $questions = $assessment->questions()
+            ->where('literacy_questions.material_id', $assessment->material_id)
+            ->with('answers.option')
+            ->get();
 
         return view('literacy.teacher.assessment_results.show', compact('assessment', 'questions'));
     }
@@ -52,12 +55,14 @@ class LiteracyTeacherAssessmentController extends Controller
             ->firstOrFail();
 
         // Ambil semua pertanyaan, beserta jawaban dan opsi untuk asesmen ini
-        $questions = LiteracyQuestion::with([
+        $questions = LiteracyQuestion::where('material_id', $assessment->material_id)
+            ->with([
             'answers' => function ($query) use ($id) {
                 $query->where('assessment_id', $id);
             },
             'options'
-        ])->get();
+            ])
+            ->get();
 
         return view('literacy.teacher.assessment_results.show', compact('assessment', 'questions'));
     }
