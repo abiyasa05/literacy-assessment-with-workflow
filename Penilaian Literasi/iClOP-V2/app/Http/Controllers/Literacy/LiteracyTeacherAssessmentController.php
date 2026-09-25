@@ -36,9 +36,13 @@ class LiteracyTeacherAssessmentController extends Controller
         })->findOrFail($id);
 
         // Ambil pertanyaan terkait asesmen
-        $questions = $assessment->questions()
-            ->where('literacy_questions.material_id', $assessment->material_id)
-            ->with('answers.option')
+        $questions = LiteracyQuestion::where('material_id', $assessment->material_id)
+            ->with([
+                'answers' => function ($query) use ($id) {
+                    $query->where('assessment_id', $id);
+                },
+                'options'
+            ])
             ->get();
 
         return view('literacy.teacher.assessment_results.show', compact('assessment', 'questions'));

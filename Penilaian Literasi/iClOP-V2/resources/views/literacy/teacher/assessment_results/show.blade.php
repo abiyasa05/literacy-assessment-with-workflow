@@ -379,13 +379,22 @@
                         return trim($text);
                     };
 
-                    $parseEssayFeedback = function ($answer) use ($essayThreshold) {
+                    $assessmentFeedback = json_decode($assessment->feedback, true) ?? [];
+
+                    $parseEssayFeedback = function ($answer, $questionId) use ($essayThreshold, $assessmentFeedback) {
                         $essayFeedbackData = null;
                         $isCorrect = false;
                         $similarityScore = null;
 
+                        foreach ($assessmentFeedback as $feedback) {
+                            if (isset($feedback['question_id']) && $feedback['question_id'] == $questionId) {
+                                $essayFeedbackData = $feedback;
+                                break;
+                            }
+                        }
+
                         $rawFeedback = optional($answer)->feedback;
-                        if ($rawFeedback) {
+                        if (!$essayFeedbackData && $rawFeedback) {
                             $maybe = @json_decode($rawFeedback, true);
                             if (is_array($maybe) && isset($maybe['ai_score'])) {
                                 $essayFeedbackData = [
@@ -401,6 +410,16 @@
                             }
                         }
 
+                        if ($essayFeedbackData) {
+                            $essayFeedbackData['relevansi'] = $essayFeedbackData['relevansi'] ?? 0;
+                            $essayFeedbackData['kelengkapan'] = $essayFeedbackData['kelengkapan'] ?? 0;
+                            $essayFeedbackData['kejelasan'] = $essayFeedbackData['kejelasan'] ?? 0;
+                            $essayFeedbackData['ai_score'] = $essayFeedbackData['ai_score'] ?? 0;
+                            $essayFeedbackData['feedback'] = $essayFeedbackData['feedback'] ?? '';
+                            $essayFeedbackData['evaluation'] = $essayFeedbackData['evaluation'] ?? [];
+                            $isCorrect = (float) $essayFeedbackData['ai_score'] >= $essayThreshold;
+                        }
+
                         return compact('essayFeedbackData', 'isCorrect', 'similarityScore');
                     };
 
@@ -411,7 +430,7 @@
                         if ($question->type === 'multiple_choice' && $answer) {
                             $isCorrect = optional($answer->option)->is_correct;
                         } elseif ($question->type === 'essay' && $answer) {
-                            $essayResult = $parseEssayFeedback($answer);
+                            $essayResult = $parseEssayFeedback($answer, $question->id);
                             $isCorrect = $essayResult['isCorrect'];
 
                             if (!$isCorrect) {
@@ -527,7 +546,7 @@
                                     if ($question->type === 'multiple_choice' && $answer) {
                                         $isCorrect = optional($answer->option)->is_correct;
                                     } elseif ($question->type === 'essay' && $answer) {
-                                        $essayResult = $parseEssayFeedback($answer);
+                                        $essayResult = $parseEssayFeedback($answer, $question->id);
                                         $essayFeedbackData = $essayResult['essayFeedbackData'];
                                         $isCorrect = $essayResult['isCorrect'];
 
