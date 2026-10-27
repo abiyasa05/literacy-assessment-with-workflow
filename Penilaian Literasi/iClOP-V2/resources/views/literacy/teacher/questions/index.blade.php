@@ -402,7 +402,7 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Question</th>
-                                        <th>Tipe</th>
+                                        <th>Type</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
