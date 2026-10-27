@@ -384,7 +384,7 @@
                             <table id="progressTable" class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th>Nu</th>
+                                        <th>No</th>
                                         <th>Student Name</th>
                                         <th>Status</th>
                                         <th>Score</th>
