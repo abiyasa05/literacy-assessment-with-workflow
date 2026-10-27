@@ -47,9 +47,9 @@
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>{{ $option->option_text }}</span>
                                     <div>
-                                        <span class="badge bg-primary">Skor: {{ $option->score ?? 0 }}</span>
+                                        <span class="badge bg-primary">Score: {{ $option->score ?? 0 }}</span>
                                         @if($option->is_correct)
-                                            <span class="badge bg-success">Benar</span>
+                                            <span class="badge bg-success">Correct</span>
                                         @endif
                                     </div>
                                 </li>
@@ -58,17 +58,17 @@
                     </div>
                 @else
                     <div class="mb-3">
-                        <label class="form-label">Jawaban Short Answer:</label>
+                        <label class="form-label">Answer Short Answer:</label>
                         <textarea class="form-control bg-light" rows="5" readonly>{{ $question->essay_answer ?? '-' }}</textarea>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Skor:</label>
+                        <label class="form-label">Score:</label>
                         <div class="form-control bg-light">{{ $question->essay_score ?? '-' }}</div>
                     </div>
                 @endif
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
