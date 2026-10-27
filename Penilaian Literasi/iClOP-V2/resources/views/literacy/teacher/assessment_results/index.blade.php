@@ -384,11 +384,11 @@
                             <table id="progressTable" class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th>No</th>
+                                        <th>Nu</th>
                                         <th>Student Name</th>
                                         <th>Status</th>
-                                        <th>Skor</th>
-                                        <th>Tindakan</th>
+                                        <th>Score</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -401,18 +401,18 @@
                                                         @if ($assessment->status == 'completed') bg-success
                                                         @elseif ($assessment->status == 'in_progress') bg-warning
                                                         @endif">
-                                                    {{ $assessment->status == 'completed' ? 'Selesai' : 'Dalam Pengerjaan' }}
+                                                    {{ $assessment->status == 'completed' ? 'Completed' : 'In Progress' }}
                                                 </span>
                                             </td>
                                             <td>{{ $assessment->score ?? 'Not Graded Yet' }}</td>
                                             <td>
                                                 @if ($assessment->status == 'in_progress')
                                                     <button onclick="openAssessmentResult('{{ route('literacy_teacher_assessment_results_view', $assessment->id) }}')" class="btn btn-sm btn-success" disabled>
-                                                        Lihat Hasil
+                                                        Show Result
                                                     </button>
                                                 @else
                                                     <a href="{{ route('literacy_teacher_assessment_results_view', $assessment->id) }}"
-                                                        class="btn btn-sm btn-success" target="_blank">Lihat Hasil</a>
+                                                        class="btn btn-sm btn-success" target="_blank">Show Result</a>
                                                 @endif
                                             </td>
                                         </tr>
