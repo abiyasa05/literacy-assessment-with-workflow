@@ -13,7 +13,7 @@
                         style="resize: none; overflow: auto;">{{ $material->title }}</textarea>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Teks Cerita:</label>
+                    <label class="form-label">Story Text:</label>
                     @if ($material->storyTexts->isEmpty())
                         <div class="form-control bg-light">-</div>
                     @else
@@ -39,7 +39,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
