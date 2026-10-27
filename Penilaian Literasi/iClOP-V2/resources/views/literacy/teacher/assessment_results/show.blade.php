@@ -622,9 +622,9 @@
                                                             </h6>
 
                                                             <div class="mb-3">
-                                                                <strong>Relevansi</strong><br>
+                                                                <strong>Relevance</strong><br>
 
-                                                                Skor :
+                                                                Score :
                                                                 <span class="badge bg-primary">
                                                                     {{ $essayFeedbackData['relevansi'] }}
                                                                 </span>
@@ -637,9 +637,9 @@
                                                             <hr>
 
                                                             <div class="mb-3">
-                                                                <strong>Kelengkapan</strong><br>
+                                                                <strong>Completeness</strong><br>
 
-                                                                Skor :
+                                                                Score :
                                                                 <span class="badge bg-primary">
                                                                     {{ $essayFeedbackData['kelengkapan'] }}
                                                                 </span>
@@ -652,9 +652,9 @@
                                                             <hr>
 
                                                             <div class="mb-3">
-                                                                <strong>Kejelasan</strong><br>
+                                                                <strong>Clarity</strong><br>
 
-                                                                Skor :
+                                                                Score :
                                                                 <span class="badge bg-primary">
                                                                     {{ $essayFeedbackData['kejelasan'] }}
                                                                 </span>
@@ -667,7 +667,7 @@
                                                             <hr>
 
                                                             <div>
-                                                                <strong>Skor Akhir</strong>
+                                                                <strong>Final Score</strong>
 
                                                                 <span class="badge bg-primary">
                                                                     {{ $essayFeedbackData['ai_score'] }}%
