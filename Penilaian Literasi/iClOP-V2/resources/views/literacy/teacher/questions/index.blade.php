@@ -388,7 +388,7 @@
                                 id="questionForm" class="d-inline-block">
                                 @csrf
                                 <button type="submit" class="btn btn-primary">
-                                    Publikasikan Asesmen
+                                    Publish the Assessment
                                 </button>
                             </form>
                         </div>
