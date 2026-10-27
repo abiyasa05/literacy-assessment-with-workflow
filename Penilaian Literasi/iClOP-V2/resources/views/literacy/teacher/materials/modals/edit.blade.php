@@ -33,14 +33,14 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">File Saat Ini</label>
+                        <label class="form-label">Current File</label>
                         <div class="form-control bg-light">
                             {{ $material->file_path ? basename($material->file_path) : '-' }}
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="file" class="form-label">Ganti File</label>
+                        <label for="file" class="form-label">Change File</label>
                         <input type="file" name="file" class="form-control">
                     </div>
 
