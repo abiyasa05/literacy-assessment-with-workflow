@@ -16,9 +16,11 @@ class LiteracyTeacherAssessmentController extends Controller
     public function index()
     {
         // Ambil asesmen hanya dari user dengan role student
-        $assessments = LiteracyAssessment::whereHas('user', function ($query) {
-            $query->where('role', 'student');
-        })->whereIn('status', ['in_progress', 'completed']) // Tambahkan filter status
+        $assessments = LiteracyAssessment::with(['user', 'material'])
+            ->whereHas('user', function ($query) {
+                $query->where('role', 'student');
+            })->whereIn('status', ['in_progress', 'completed']) // Tambahkan filter status
+            ->orderByRaw("CASE WHEN status = 'completed' THEN 0 ELSE 1 END")
             ->latest()
             ->get();
 
