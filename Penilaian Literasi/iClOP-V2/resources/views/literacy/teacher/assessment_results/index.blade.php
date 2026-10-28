@@ -386,6 +386,7 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Student Name</th>
+                                        <th>Material</th>
                                         <th>Status</th>
                                         <th>Score</th>
                                         <th>Action</th>
@@ -396,6 +397,7 @@
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ $assessment->user->name ?? 'Unknown' }}</td>
+                                            <td>{{ $assessment->material->title ?? 'Unknown' }}</td>
                                             <td>
                                                 <span class="badge 
                                                         @if ($assessment->status == 'completed') bg-success
@@ -418,7 +420,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="5" class="text-center text-muted">There are no ongoing or completed assessments yet.</td>
+                                            <td colspan="6" class="text-center text-muted">There are no ongoing or completed assessments yet.</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
