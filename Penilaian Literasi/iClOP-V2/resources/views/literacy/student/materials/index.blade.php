@@ -521,10 +521,12 @@
                             <p style="font-size: 24px; font-weight: 500; color: #34364A; margin-bottom: 2px;">Materials List</p>
                             <p class="text-muted mb-0">Select a material to see the list of assessments</p>
                         </div>
-                        <div class="material-search">
+                        <form id="materialSearchForm" class="material-search"
+                            action="{{ route('literacy_student_materials') }}" method="GET">
                             <i class="fas fa-search"></i>
-                            <input type="search" id="materialSearch" placeholder="Search materials..." aria-label="Search materials">
-                        </div>
+                            <input type="search" name="search" value="{{ request('search') }}"
+                                placeholder="Search materials..." aria-label="Search materials">
+                        </form>
                     </div>
                     <div class="container mt-4" id="materialAssessmentList">
                         @forelse ($materials_student as $index => $material_student)
@@ -532,7 +534,7 @@
                                 <div class="material-header" data-toggle="collapse"
                                     data-target="#materialAssessments{{ $material_student->id }}"
                                     aria-expanded="{{ $index === 0 ? 'true' : 'false' }}">
-                                    <div class="material-number">{{ $index + 1 }}</div>
+                                    <div class="material-number">{{ $materials_student->firstItem() + $index }}</div>
                                     <div class="material-title">{{ $material_student->title }}</div>
                                     <i class="far fa-file-alt material-file-icon"></i>
                                     @if ($material_student->file_path)
@@ -617,8 +619,23 @@
                                 </div>
                             </section>
                         @empty
-                            <div class="alert alert-light border">There's no material available.</div>
+                            <div class="alert alert-light border">
+                                No materials found.
+                            </div>
                         @endforelse
+
+                        @if ($materials_student->total() > 0)
+                            <div class="text-center text-muted small mt-3">
+                                Showing {{ $materials_student->firstItem() }} to {{ $materials_student->lastItem() }}
+                                of {{ $materials_student->total() }} materials
+                            </div>
+                        @endif
+
+                        @if ($materials_student->hasPages())
+                            <div class="d-flex justify-content-center mt-4">
+                                {{ $materials_student->links('pagination::bootstrap-5') }}
+                            </div>
+                        @endif
                     </div>
                 </div>
             </main>                        
@@ -1014,18 +1031,20 @@
     </style>
     <script>
         $(function () {
-            $('#materialSearch').on('input', function () {
-                var searchTerm = $(this).val().toLowerCase();
+            var searchTimer;
+            var searchForm = $('#materialSearchForm');
+            var searchInput = searchForm.find('input[name="search"]');
 
-                $('.material-panel').each(function () {
-                    var materialTitle = $(this).find('.material-title').text().toLowerCase();
-                    $(this).toggle(materialTitle.indexOf(searchTerm) !== -1);
-                });
+            searchInput.on('input', function () {
+                clearTimeout(searchTimer);
+                searchTimer = setTimeout(function () {
+                    searchForm.trigger('submit');
+                }, 400);
             });
         });
     </script>
     <footer class="footer"
-        style="background-color: #EAEAEA; color: #636363; text-align: center; padding: 10px 0; position: fixed; bottom: 0;  width: 100%; ">
+        style="background-color: #EAEAEA; color: #636363; text-align: center; padding: 10px 0; margin-top: 40px; width: 100%;">
         © 2026 Your Website. All rights reserved.
     </footer>
 
