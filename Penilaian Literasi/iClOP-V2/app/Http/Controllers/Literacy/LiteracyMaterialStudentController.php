@@ -32,14 +32,22 @@ class LiteracyMaterialStudentController extends Controller
         return view('literacy.student.materials.show', compact('material'));
     }
 
-    function show_materials()
+    function show_materials(Request $request)
     {
+        $search = trim($request->input('search', ''));
+
         $materials_student = LiteracyMaterial::with([
             'assessments' => function ($query) {
                 $query->where('user_id', Auth::id())
                     ->orderBy('created_at');
             },
-        ])->orderBy('created_at', 'desc')->get();
+        ])
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where('title', 'like', '%' . $search . '%');
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->withQueryString();
 
         return view('literacy.student.materials.index', [
             'materials_student' => $materials_student,
