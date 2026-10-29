@@ -385,7 +385,9 @@ class LiteracyAssessmentController extends Controller
                         Log::info("Sending HTTP request to N8N for answer_id: " . ($essay['answer_id'] ?? 'unknown'));
 
                         $response = Http::timeout(300)->post(
-                            'http://192.168.60.24:56/webhook/ai-gateway-rag',
+			    'http://192.168.60.24:5678/webhook/literacy-rag-v7',
+                            //'http://192.168.60.24:5678/webhook/literacy-rag-v6',
+                            //'http://192.168.60.24:5678/webhook/ai-gateway-rag',
                             [
                                 'action' => 'score',
                                 'answer_id' => $essay['answer_id'],
