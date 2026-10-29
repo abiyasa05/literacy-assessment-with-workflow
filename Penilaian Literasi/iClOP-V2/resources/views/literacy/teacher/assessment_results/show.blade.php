@@ -18,6 +18,46 @@
             padding: 20px;
         }
 
+        .assessment-detail-content {
+            width: 80%;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .assessment-answer-list {
+            width: calc(100% - 24px);
+            margin-left: 12px;
+            margin-right: 12px;
+        }
+
+        .assessment-answer-content {
+            position: relative;
+        }
+
+        .assessment-answer-list .row {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .assessment-answer-status {
+            position: absolute !important;
+            top: 0 !important;
+            right: 0 !important;
+            z-index: 2;
+        }
+
+        @media (max-width: 768px) {
+            .assessment-detail-content {
+                width: 100%;
+            }
+
+            .assessment-answer-list {
+                width: 100%;
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+
         @media (max-width: 768px) {
             #sidebarMenu {
                 position: fixed;
@@ -463,7 +503,7 @@
                     $statusAsesmen = $statusMap[$assessment->status] ?? 'Unknown';
                 @endphp
 
-                <div class="content">
+                <div class="content assessment-detail-content">
                     <div class="row mb-3">
                         <div class="col-12 d-flex justify-content-between align-items-center">
                             <p style="font-size: 24px; font-weight: 500; color: #34364A; margin-bottom: 0;">Student
@@ -504,7 +544,7 @@
                         </div>
 
                         <!-- List Jawaban -->
-                        <ul class="list-group mt-4">
+                        <ul class="list-group mt-4 assessment-answer-list">
                             @php
                                 $questionTypeOrder = ['multiple_choice' => 1, 'ordering' => 2, 'essay' => 3];
                                 $sortedQuestions = collect($questions)
@@ -570,7 +610,7 @@
                                     $choices = $question->choices ? explode("\n", $question->choices) : [];
                                 @endphp
 
-                                <li class="list-group-item">
+                                <li class="list-group-item assessment-answer-item">
                                     <div class="row">
                                         <!-- Question Number -->
                                         <div class="col-auto d-flex justify-content-start align-items-start pt-2">
@@ -578,7 +618,7 @@
                                         </div>
 
                                         <!-- Question and Answer Content -->
-                                        <div class="col">
+                                        <div class="col assessment-answer-content">
                                             {{-- Tampilkan kutipan atau paragraf jika ada --}}
                                             @if ($kutipan)
                                                 <p class="pt-2"><strong>Bacalah kutipan berikut:</strong></p>
@@ -697,14 +737,13 @@
                                                     @endif
                                                 @endif
                                             @endif
-                                        </div>
-
-                                        <!-- Status benar/salah -->
-                                        <div class="col-auto d-flex align-items-start pt-2">
-                                            <span
-                                                class="badge {{ $isCorrect ? 'bg-success' : 'bg-danger' }} px-3 py-2">
-                                                {{ $isCorrect ? 'Correct ✅' : 'Incorrect ❌' }}
-                                            </span>
+                                            <!-- Status benar/salah -->
+                                            <div class="col-auto d-flex align-items-start pt-2 assessment-answer-status">
+                                                <span
+                                                    class="badge {{ $isCorrect ? 'bg-success' : 'bg-danger' }} px-3 py-2">
+                                                    {{ $isCorrect ? 'Correct ✅' : 'Incorrect ❌' }}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </li>
