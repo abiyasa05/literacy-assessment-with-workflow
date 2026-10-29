@@ -404,7 +404,7 @@
                                                 @if ($history_generated_text->question_type == 'multiple_choice')
                                                     Multiple Choice
                                                 @elseif ($history_generated_text->question_type == 'essay')
-                                                    Short Answer
+                                                    Essay
                                                 @else
                                                     -
                                                 @endif
