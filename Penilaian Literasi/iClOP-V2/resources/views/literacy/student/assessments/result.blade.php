@@ -34,6 +34,35 @@
             position: relative;
         }
 
+        .essay-assessment-text {
+            font-size: 1.3rem;
+            line-height: 1.7;
+        }
+
+        .essay-assessment-text h6 {
+            font-size: 1.5rem;
+        }
+
+        .essay-question-text {
+            font-size: 1.3rem;
+            line-height: 1.7;
+        }
+
+        .essay-question-number {
+            font-size: 1.3rem;
+            line-height: 1.7;
+        }
+
+        .essay-final-score,
+        .essay-final-score strong {
+            font-size: 1.3rem;
+            line-height: 1.7;
+        }
+
+        .essay-final-score .badge {
+            font-size: 1.1rem;
+        }
+
         .assessment-answer-list .row {
             margin-left: 0;
             margin-right: 0;
@@ -528,7 +557,10 @@
 
                                 <li class="list-group-item assessment-answer-item">
                                     <div class="row">
-                                        <div class="col-auto pt-2"><strong>{{ $index + 1 }}.</strong></div>
+                                        <div
+                                            class="col-auto pt-2 {{ $question->type === 'essay' ? 'essay-question-number' : '' }}">
+                                            <strong>{{ $index + 1 }}.</strong>
+                                        </div>
 
                                         <div class="col assessment-answer-content">
                                             @if ($kutipan)
@@ -536,7 +568,7 @@
                                                 <div class="ps-3 pe-3"><em>"{{ $kutipan }}"</em></div>
                                             @endif
 
-                                            <p class="mt-2">{{ $pertanyaanBersih }}</p>
+                                            <p class="mt-2 essay-question-text">{{ $pertanyaanBersih }}</p>
 
                                             @if ($isOrdering && count($choices) > 0)
                                                 <div class="ps-3">
@@ -552,7 +584,7 @@
                                                 </div>
                                             @endif
 
-                                            <p class="mt-3">
+                                            <p class="mt-3 essay-question-text">
                                                 <strong>Student Answer:</strong>
                                                 {{ $question->type === 'multiple_choice'
                                                     ? optional($answer)->option->option_text ?? 'Not Answered'
@@ -562,7 +594,7 @@
                                             @if ($question->type === 'essay')
                                                 @if ($essayFeedback)
                                                     <div class="card mt-3 shadow-sm">
-                                                        <div class="card-body">
+                                                        <div class="card-body essay-assessment-text">
 
                                                             <h6 class="fw-bold mb-3">
                                                                 AI Assessment
@@ -629,7 +661,7 @@
 
                                                 <hr>
 
-                                                <div class="mb-3">
+                                                <div class="mb-3 essay-final-score">
 
                                                     <strong>Final Score</strong>
 
@@ -649,7 +681,7 @@
                                                 @if (!$isCorrect && !empty($essayFeedback['feedback']))
                                                     <div class="mt-3 alert alert-warning">
                                                         <strong>Feedback AI:</strong>
-                                                        <div class="mt-1">
+                                                        <div class="mt-1 essay-assessment-text">
                                                             {{ $essayFeedback['feedback'] }}
                                                         </div>
                                                     </div>
