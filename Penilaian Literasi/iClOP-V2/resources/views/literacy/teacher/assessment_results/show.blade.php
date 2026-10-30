@@ -34,6 +34,35 @@
             position: relative;
         }
 
+        .essay-assessment-text {
+            font-size: 1.3rem;
+            line-height: 1.7;
+        }
+
+        .essay-assessment-text h6 {
+            font-size: 1.5rem;
+        }
+
+        .essay-question-text {
+            font-size: 1.3rem;
+            line-height: 1.7;
+        }
+
+        .essay-question-number {
+            font-size: 1.3rem;
+            line-height: 1.7;
+        }
+
+        .essay-final-score,
+        .essay-final-score strong {
+            font-size: 1.3rem;
+            line-height: 1.7;
+        }
+
+        .essay-final-score .badge {
+            font-size: 1.1rem;
+        }
+
         .assessment-answer-list .row {
             margin-left: 0;
             margin-right: 0;
@@ -613,7 +642,8 @@
                                 <li class="list-group-item assessment-answer-item">
                                     <div class="row">
                                         <!-- Question Number -->
-                                        <div class="col-auto d-flex justify-content-start align-items-start pt-2">
+                                        <div
+                                            class="col-auto d-flex justify-content-start align-items-start pt-2 {{ $question->type === 'essay' ? 'essay-question-number' : '' }}">
                                             <strong>{{ $index + 1 }}.</strong>
                                         </div>
 
@@ -626,7 +656,7 @@
                                             @endif
 
                                             {{-- Question --}}
-                                            <p class="mt-2">{{ $pertanyaanBersih }}</p>
+                                            <p class="mt-2 essay-question-text">{{ $pertanyaanBersih }}</p>
 
                                             {{-- Display options for ordering question --}}
                                             @if ($isOrdering && count($choices) > 0)
@@ -644,7 +674,7 @@
                                             @endif
 
                                             {{-- Jawaban siswa --}}
-                                            <p class="mt-3">
+                                            <p class="mt-3 essay-question-text">
                                                 <strong>Student Answer:</strong>
                                                 {{ $question->type === 'multiple_choice'
                                                     ? optional($answer)->option->option_text ?? 'Not Answered'
@@ -655,7 +685,7 @@
                                             @if ($question->type === 'essay')
                                                 @if ($essayFeedbackData)
                                                     <div class="card mt-3 shadow-sm">
-                                                        <div class="card-body">
+                                                        <div class="card-body essay-assessment-text">
 
                                                             <h6 class="fw-bold mb-3">
                                                                 AI Assessment
@@ -706,7 +736,7 @@
 
                                                             <hr>
 
-                                                            <div>
+                                                            <div class="essay-final-score">
                                                                 <strong>Final Score</strong>
 
                                                                 <span class="badge bg-primary">
